@@ -1,0 +1,317 @@
+version: '3.2'
+networks:
+    default:
+      external:
+        name: frigate-network
+
+services:
+    frigate-zookeeper:
+        build: ./zookeeper
+        entrypoint: /opt/kafka_2.12-2.4.0/bin/zookeeper-server-start.sh zookeeper.properties
+        image: 127.0.0.1:5001/zookeeper
+        
+    frigate-kafka:
+        build: ./kafka        
+        entrypoint: ./wait-for-it.sh frigate-zookeeper:2181 --strict -- /opt/kafka_2.12-2.4.0/bin/kafka-server-start.sh server.properties
+        image: 127.0.0.1:5001/kafka        
+        depends_on:
+            - frigate-zookeeper
+
+    frigate-kafka-setup:
+        build: ./kafka-setup
+        environment: 
+            - TOPIC_PARTITIONS=8
+            - KAFKA_HOME=/opt/kafka_2.12-2.4.0
+        entrypoint: ./wait-for-it.sh frigate-kafka:9092 --strict -- ./kafka-setup.sh
+        image: 127.0.0.1:5001/kafka-setup
+        depends_on:
+            - frigate-kafka
+
+    
+    frigate-stream-0:
+        build: ./stream        
+        entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6066
+        image: 127.0.0.1:5001/stream                
+        environment: 
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_ROADNET_PATH=/var/data/irregular_grid_dag2/net.net.xml
+            - TOPIC_PARTITIONS=8
+            - KAFKA_BROKER_URL_2=kafka://frigate-kafka
+            - ETA=0.5
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 6066
+              target: 6066
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+    
+    frigate-stream-1:
+        build: ./stream        
+        entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6067
+        image: 127.0.0.1:5001/stream                
+        environment: 
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_ROADNET_PATH=/var/data/irregular_grid_dag2/net.net.xml
+            - TOPIC_PARTITIONS=8
+            - KAFKA_BROKER_URL_2=kafka://frigate-kafka
+            - ETA=0.5
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 6067
+              target: 6067
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+    
+    frigate-stream-2:
+        build: ./stream        
+        entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6068
+        image: 127.0.0.1:5001/stream                
+        environment: 
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_ROADNET_PATH=/var/data/irregular_grid_dag2/net.net.xml
+            - TOPIC_PARTITIONS=8
+            - KAFKA_BROKER_URL_2=kafka://frigate-kafka
+            - ETA=0.5
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 6068
+              target: 6068
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+    
+    frigate-stream-3:
+        build: ./stream        
+        entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6069
+        image: 127.0.0.1:5001/stream                
+        environment: 
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_ROADNET_PATH=/var/data/irregular_grid_dag2/net.net.xml
+            - TOPIC_PARTITIONS=8
+            - KAFKA_BROKER_URL_2=kafka://frigate-kafka
+            - ETA=0.5
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 6069
+              target: 6069
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+    
+    frigate-stream-4:
+        build: ./stream        
+        entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6070
+        image: 127.0.0.1:5001/stream                
+        environment: 
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_ROADNET_PATH=/var/data/irregular_grid_dag2/net.net.xml
+            - TOPIC_PARTITIONS=8
+            - KAFKA_BROKER_URL_2=kafka://frigate-kafka
+            - ETA=0.5
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 6070
+              target: 6070
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+    
+    frigate-stream-5:
+        build: ./stream        
+        entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6071
+        image: 127.0.0.1:5001/stream                
+        environment: 
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_ROADNET_PATH=/var/data/irregular_grid_dag2/net.net.xml
+            - TOPIC_PARTITIONS=8
+            - KAFKA_BROKER_URL_2=kafka://frigate-kafka
+            - ETA=0.5
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 6071
+              target: 6071
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+    
+    frigate-stream-6:
+        build: ./stream        
+        entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6072
+        image: 127.0.0.1:5001/stream                
+        environment: 
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_ROADNET_PATH=/var/data/irregular_grid_dag2/net.net.xml
+            - TOPIC_PARTITIONS=8
+            - KAFKA_BROKER_URL_2=kafka://frigate-kafka
+            - ETA=0.5
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 6072
+              target: 6072
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+    
+    frigate-stream-7:
+        build: ./stream        
+        entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6073
+        image: 127.0.0.1:5001/stream                
+        environment: 
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_ROADNET_PATH=/var/data/irregular_grid_dag2/net.net.xml
+            - TOPIC_PARTITIONS=8
+            - KAFKA_BROKER_URL_2=kafka://frigate-kafka
+            - ETA=0.5
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 6073
+              target: 6073
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+    
+
+    frigate-endpoint:
+        build: ./endpoint
+        entrypoint: ./wait-for-it.sh frigate-stream-0:6066 --strict -- ./wait-for-it.sh frigate-stream-1:6067 --strict -- ./wait-for-it.sh frigate-stream-2:6068 --strict -- ./wait-for-it.sh frigate-stream-3:6069 --strict -- ./wait-for-it.sh frigate-stream-4:6070 --strict -- ./wait-for-it.sh frigate-stream-5:6071 --strict -- ./wait-for-it.sh frigate-stream-6:6072 --strict -- ./wait-for-it.sh frigate-stream-7:6073 --strict -- python endpoint_server.py
+        image: 127.0.0.1:5001/endpoint
+        environment: 
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_ROADNET_PATH=/var/data/irregular_grid_dag2/net.net.xml
+            - ENDPOINT_SERVER_HOST=0.0.0.0
+            - ENDPOINT_SERVER_PORT=8009
+            - KAFKA_BROKER_URL=frigate-kafka:9092
+            - STREAM_SERVICE_WEB_URL=frigate-stream-0:6066
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+            
+            - frigate-stream-0
+            
+            - frigate-stream-1
+            
+            - frigate-stream-2
+            
+            - frigate-stream-3
+            
+            - frigate-stream-4
+            
+            - frigate-stream-5
+            
+            - frigate-stream-6
+            
+            - frigate-stream-7
+            
+      
+    frigate-simulator:
+        build: ./simulator
+        entrypoint: ./wait-for-it.sh frigate-endpoint:8009 --strict -- python simulator_server.py
+        image: 127.0.0.1:5001/simulator
+        environment: 
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_ROADNET_PATH=/var/data/irregular_grid_dag2/net.net.xml
+            - SUMO_STEPS=1000
+            - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
+            - SUMO_SIM_FILE=/var/data/irregular_grid_dag2/simulation.sumocfg
+            - VEHICLES_TO_ROUTE=PERIODICAL_STEP
+            - ROUTING_STEP_PERIOD=10            
+            - ENDPOINT_SERVER_PORT=8009
+            - ENDPOINT_SERVER_HOST=frigate-endpoint
+            - SIMULATOR_SERVER_PORT=8010
+            - SIMULATOR_SERVER_HOST=0.0.0.0
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 8010
+              target: 8010
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+            - frigate-endpoint
+            
+            - frigate-stream-0
+            
+            - frigate-stream-1
+            
+            - frigate-stream-2
+            
+            - frigate-stream-3
+            
+            - frigate-stream-4
+            
+            - frigate-stream-5
+            
+            - frigate-stream-6
+            
+            - frigate-stream-7
+            

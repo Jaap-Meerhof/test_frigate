@@ -1,0 +1,9 @@
+name: frigate-airflow
+channels:
+  - defaults
+  - conda-forge
+  - anaconda
+dependencies:  
+  - jinja2
+  - sh
+  - requests

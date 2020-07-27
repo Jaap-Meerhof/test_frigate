@@ -1,0 +1,45 @@
+{
+    "partitions": [
+        {
+            "topic": "qtable-entry-init-topic",
+            "partition": 0,
+            "offset": -1
+        },
+        {
+            "topic": "qtable-entry-update-topic",
+            "partition": 0,
+            "offset": -1
+        },
+        {
+            "topic": "vehicle-entry-init-topic",
+            "partition": 0,
+            "offset": -1
+        },
+        {
+            "topic": "vehicle-status-topic",
+            "partition": 0,
+            "offset": -1
+        },
+        {
+            "topic": "vehicle-arrival-topic",
+            "partition": 0,
+            "offset": -1
+        },
+        {
+            "topic": "edge-change-topic",
+            "partition": 0,
+            "offset": -1
+        },
+        {
+            "topic": "stream-service-app-qtable-changelog",
+            "partition": 0,
+            "offset": -1
+        },
+        {
+            "topic": "stream-service-app-vehicle-table-changelog",
+            "partition": 0,
+            "offset": -1
+        }
+    ],
+    "version": 1
+}

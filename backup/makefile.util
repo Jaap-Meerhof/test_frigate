@@ -1,0 +1,111 @@
+conft :	
+	ifeq ($(KAFKA_HOME),)
+		$(error Must provide KAFKA_HOME in environment)
+	endif
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic qtable-entry-init-topic 	
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic qtable-entry-update-topic 		
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic vehicle-entry-init-topic
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic vehicle-status-topic
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic vehicle-arrival-topic	
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic edge-change-topic
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic stream-service-app-qtable-changelog 
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic stream-service-app-vehicle-table-changelog 	
+
+reconft:	
+	ifeq ($(KAFKA_HOME),)
+		$(error Must provide KAFKA_HOME in environment)
+	endif
+	-$(KAFKA_HOME)/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --entity-type topics --delete-config cleanup.policy --entity-name qtable-entry-init-topic 
+	-$(KAFKA_HOME)/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --entity-type topics --delete-config cleanup.policy --entity-name qtable-entry-update-topic 
+	-$(KAFKA_HOME)/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --entity-type topics --delete-config cleanup.policy --entity-name vehicle-entry-init-topic
+	-$(KAFKA_HOME)/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --entity-type topics --delete-config cleanup.policy --entity-name vehicle-status-topic
+	-$(KAFKA_HOME)/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --entity-type topics --delete-config cleanup.policy --entity-name vehicle-arrival-topic	
+	-$(KAFKA_HOME)/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --entity-type topics --delete-config cleanup.policy --entity-name edge-change-topic
+	-$(KAFKA_HOME)/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --entity-type topics --delete-config cleanup.policy --entity-name stream-service-app-qtable-changelog
+	-$(KAFKA_HOME)/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --entity-type topics --delete-config cleanup.policy --entity-name stream-service-app-vehicle-table-changelog 	
+
+consumet :
+	ifeq ($(KAFKA_HOME),)
+		$(error Must provide KAFKA_HOME in environment)
+	endif
+	-$(KAFKA_HOME)/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --timeout-ms 1000 --topic qtable-entry-init-topic
+	-$(KAFKA_HOME)/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --timeout-ms 1000 --topic qtable-entry-update-topic
+	-$(KAFKA_HOME)/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --timeout-ms 1000 --topic vehicle-entry-init-topic
+	-$(KAFKA_HOME)/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --timeout-ms 1000 --topic vehicle-status-topic
+	-$(KAFKA_HOME)/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --timeout-ms 1000 --topic vehicle-arrival-topic	
+	-$(KAFKA_HOME)/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --timeout-ms 1000 --topic edge-change-topic
+	-$(KAFKA_HOME)/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --timeout-ms 1000 --topic stream-service-app-qtable-changelog
+	-$(KAFKA_HOME)/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --timeout-ms 1000 --topic stream-service-app-vehicle-table-changelog 
+
+
+infot:
+	ifeq ($(KAFKA_HOME),)
+		$(error Must provide KAFKA_HOME in environment)
+	endif
+	-$(KAFKA_HOME)/bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --time -1 --topic qtable-entry-init-topic
+	-$(KAFKA_HOME)/bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --time -1 --topic qtable-entry-update-topic
+	-$(KAFKA_HOME)/bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --time -1 --topic vehicle-entry-init-topic
+	-$(KAFKA_HOME)/bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --time -1 --topic vehicle-status-topic
+	-$(KAFKA_HOME)/bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --time -1 --topic vehicle-arrival-topic	
+	-$(KAFKA_HOME)/bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --time -1 --topic edge-change-topic
+	-$(KAFKA_HOME)/bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --time -1 --topic stream-service-app-qtable-changelog
+	-$(KAFKA_HOME)/bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --time -1 --topic stream-service-app-vehicle-table-changelog 
+
+createt :
+	echo "creating kafka topics ..."
+	ifeq ($(KAFKA_HOME),)
+		$(error Must provide KAFKA_HOME in environment)
+	endif
+	ifeq ($(TOPIC_PARTITIONS),)
+		$(error Must provide TOPIC_PARTITIONS in environment)
+	endif
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions $(TOPIC_PARTITIONS) --topic qtable-entry-init-topic
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions $(TOPIC_PARTITIONS) --topic qtable-entry-update-topic
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions $(TOPIC_PARTITIONS) --topic vehicle-entry-init-topic
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions $(TOPIC_PARTITIONS) --topic vehicle-status-topic
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions $(TOPIC_PARTITIONS) --topic vehicle-arrival-topic
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions $(TOPIC_PARTITIONS) --topic edge-change-topic
+
+
+delr:
+	ifeq ($(KAFKA_HOME),)
+		$(error Must provide KAFKA_HOME in environment)
+	endif
+	-$(KAFKA_HOME)/bin/kafka-delete-records.sh --bootstrap-server localhost:9092 --offset-json-file ./offsetfile.json
+
+delt :
+	echo "deleting kafka topics ..."	
+	ifeq ($(KAFKA_HOME),)
+		$(error Must provide KAFKA_HOME in environment)
+	endif
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic qtable-entry-init-topic 
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic qtable-entry-update-topic 
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic vehicle-entry-init-topic 	
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic vehicle-status-topic 
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic vehicle-arrival-topic	 
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic edge-change-topic 
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic stream-service-app-qtable-changelog 
+	-$(KAFKA_HOME)/bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic stream-service-app-vehicle-table-changelog 
+
+listt :
+	ifeq ($(KAFKA_HOME),)
+		$(error Must provide KAFKA_HOME in environment)
+	endif
+	$(KAFKA_HOME)/bin/kafka-topics.sh --list --zookeeper localhost:2181
+
+runz :
+	ifeq ($(KAFKA_HOME),)
+		$(error Must provide KAFKA_HOME in environment)
+	endif
+	$(KAFKA_HOME)/bin/zookeeper-server-start.sh $(KAFKA_HOME)/config/zookeeper.properties
+
+runk :
+	ifeq ($(KAFKA_HOME),)
+		$(error Must provide KAFKA_HOME in environment)
+	endif
+	$(KAFKA_HOME)/bin/kafka-server-start.sh $(KAFKA_HOME)/config/server.properties
+ 
+killj :
+	killall -SIGINT java
+	killall -SIGINT java
+  

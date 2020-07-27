@@ -1,0 +1,354 @@
+{
+    "Sensor0": {
+        "messages_active": 0,
+        "messages_received_total": 12044,
+        "messages_sent": 6112,
+        "messages_sent_by_topic": {
+            "stream_worker.process_qtable_entry_init-qtable-entry-init-topic-InitQTableEntryRecord.node_id-repartition": 17,
+            "stream-service-app-qtable-changelog": 15,
+            "stream_worker.process_vehicle_entry_init-vehicle-entry-init-topic-InitVehicleEntryRecord.vehicle_id-repartition": 24,
+            "stream_worker.process_vehicle_status-vehicle-status-topic-VehicleStatusRecord.vehicle_id-repartition": 5708,
+            "stream-service-app-vehicle-table-changelog": 34,
+            "edge-change-topic": 86,
+            "stream_worker.proccess_min_y_qvalue-edge-change-topic-EdgeChangeRecord.y_node_id-repartition": 77,
+            "stream_worker.process_qtable_entry_update-qtable-entry-update-topic-QTableEntryUpdateRecord.x_node_id-repartition": 77,
+            "qtable-entry-update-topic": 74
+        },
+        "messages_s": 0,
+        "messages_received_by_topic": {
+            "qtable-entry-init-topic": 17,
+            "stream_worker.process_qtable_entry_init-qtable-entry-init-topic-InitQTableEntryRecord.node_id-repartition": 15,
+            "vehicle-entry-init-topic": 24,
+            "vehicle-status-topic": 5708,
+            "stream_worker.process_vehicle_entry_init-vehicle-entry-init-topic-InitVehicleEntryRecord.vehicle_id-repartition": 34,
+            "stream_worker.process_vehicle_status-vehicle-status-topic-VehicleStatusRecord.vehicle_id-repartition": 5926,
+            "stream_worker.process_qtable_entry_update-qtable-entry-update-topic-QTableEntryUpdateRecord.x_node_id-repartition": 92,
+            "edge-change-topic": 77,
+            "qtable-entry-update-topic": 77,
+            "stream_worker.proccess_min_y_qvalue-edge-change-topic-EdgeChangeRecord.y_node_id-repartition": 74
+        },
+        "events_active": 0,
+        "events_total": 12044,
+        "events_s": 0,
+        "events_runtime_avg": 0.014617344000726007,
+        "events_by_task": {
+            "<Task pending coro=<Service.start() running at /usr/local/lib/python3.7/site-packages/mode/services.py:736> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7fde0ca12888>()]> cb=[_run_until_complete_cb() at /usr/local/lib/python3.7/asyncio/base_events.py:158]>": 5903,
+            "<Task pending coro=<Agent._execute_actor() running at /usr/local/lib/python3.7/site-packages/faust/agents/agent.py:647> cb=[<TaskWakeupMethWrapper object at 0x7fde0ca5a588>()]>": 15,
+            "<Task pending coro=<Agent._execute_actor() running at /usr/local/lib/python3.7/site-packages/faust/agents/agent.py:647> cb=[<TaskWakeupMethWrapper object at 0x7fde0ca5abb8>()]>": 34,
+            "<Task pending coro=<Agent._execute_actor() running at /usr/local/lib/python3.7/site-packages/faust/agents/agent.py:647> cb=[<TaskWakeupMethWrapper object at 0x7fde0ca6b858>()]>": 5926,
+            "<Task pending coro=<Agent._execute_actor() running at /usr/local/lib/python3.7/site-packages/faust/agents/agent.py:647> cb=[<TaskWakeupMethWrapper object at 0x7fde0ca7a4f8>()]>": 92,
+            "<Task pending coro=<Agent._execute_actor() running at /usr/local/lib/python3.7/site-packages/faust/agents/agent.py:647> cb=[<TaskWakeupMethWrapper object at 0x7fde0ca6be88>()]>": 74
+        },
+        "events_by_stream": {
+            "<Stream: running <(*)Topic: qt...x7fde0cbaf358>>": 17,
+            "<Stream: running <(*)Topic: st...x7fde0ca56da0>>": 15,
+            "<Stream: running <(*)Topic: ve...x7fde0cbafe10>>": 24,
+            "<Stream: running <(*)Topic: ve...x7fde0cbce240>>": 5708,
+            "<Stream: running <(*)Topic: st...x7fde0ca642b0>>": 34,
+            "<Stream: running <(*)Topic: st...x7fde0ca64cc0>>": 5926,
+            "<Stream: running <(*)Topic: st...x7fde0ca74710>>": 92,
+            "<Stream: running <(*)Topic: ed...x7fde0cbcecf8>>": 77,
+            "<Stream: running <(*)Topic: qt...x7fde0ca567f0>>": 77,
+            "<Stream: running <(*)Topic: st...x7fde0ca74208>>": 74
+        },
+        "commit_latency": [
+            0.005457830004161224,
+            0.055236137995962054,
+            0.03574115197989158,
+            0.0559539940149989,
+            0.006048618000932038,
+            0.00017429798026569188,
+            0.03344496199861169,
+            0.015036363998660818,
+            0.0042616410064511,
+            0.0001577409857418388,
+            0.023223076976137236,
+            0.05191116698551923,
+            0.006964142987271771,
+            0.05667525000171736,
+            0.0037025530182290822,
+            0.00012783901183865964,
+            0.05400199699215591,
+            0.0687672019994352,
+            0.015170197002589703,
+            0.00517488899640739,
+            0.00010832102270796895,
+            0.046529446000931785,
+            0.03980628799763508,
+            0.009002031001728028,
+            0.004173081018961966,
+            0.00010741499136202037,
+            0.03832916900864802,
+            0.05729119401075877,
+            0.02210200799163431,
+            0.003917454014299437
+        ],
+        "send_latency": [
+            0.023928430979140103,
+            0.012585919990669936,
+            0.03363769702264108,
+            0.04208284697961062,
+            0.044616864004638046,
+            0.06555905498680659,
+            0.04945495101856068,
+            0.057508314988808706,
+            0.03307052602758631,
+            0.07729216699954122,
+            0.07134997998946346,
+            0.03672603302402422,
+            0.012870136997662485,
+            0.04951922199688852,
+            0.05393969401484355,
+            0.07345868399715982,
+            0.04797667500679381,
+            0.04800162298488431,
+            0.07324356801109388,
+            0.012569234007969499,
+            0.037302299024304375,
+            0.05688026698771864,
+            0.053836343984585255,
+            0.032565217989031225,
+            0.05237290801596828,
+            0.006137665011920035,
+            0.03575461599393748,
+            0.012353686994174495,
+            0.010173260990995914,
+            0.08953328302595764
+        ],
+        "send_errors": 0,
+        "assignment_latency": [],
+        "assignments_completed": 0,
+        "assignments_failed": 0,
+        "topic_buffer_full": {},
+        "tables": {
+            "qtable": {
+                "keys_retrieved": 6269,
+                "keys_updated": 15,
+                "keys_deleted": 0
+            },
+            "vehicle-table": {
+                "keys_retrieved": 24348,
+                "keys_updated": 34,
+                "keys_deleted": 0
+            }
+        },
+        "metric_counts": {},
+        "topic_committed_offsets": {
+            "qtable-entry-init-topic": {
+                "0": 16
+            },
+            "stream_worker.process_qtable_entry_init-qtable-entry-init-topic-InitQTableEntryRecord.node_id-repartition": {
+                "0": 14
+            },
+            "vehicle-entry-init-topic": {
+                "0": 23
+            },
+            "vehicle-status-topic": {
+                "0": 5707
+            },
+            "stream_worker.process_vehicle_entry_init-vehicle-entry-init-topic-InitVehicleEntryRecord.vehicle_id-repartition": {
+                "0": 33
+            },
+            "stream_worker.process_vehicle_status-vehicle-status-topic-VehicleStatusRecord.vehicle_id-repartition": {
+                "0": 5925
+            },
+            "stream_worker.process_qtable_entry_update-qtable-entry-update-topic-QTableEntryUpdateRecord.x_node_id-repartition": {
+                "0": 91
+            },
+            "edge-change-topic": {
+                "0": 76
+            },
+            "qtable-entry-update-topic": {
+                "0": 76
+            },
+            "stream_worker.proccess_min_y_qvalue-edge-change-topic-EdgeChangeRecord.y_node_id-repartition": {
+                "0": 73
+            }
+        },
+        "topic_read_offsets": {
+            "qtable-entry-init-topic": {
+                "0": 16
+            },
+            "stream_worker.process_qtable_entry_init-qtable-entry-init-topic-InitQTableEntryRecord.node_id-repartition": {
+                "0": 14
+            },
+            "vehicle-entry-init-topic": {
+                "0": 23
+            },
+            "vehicle-status-topic": {
+                "0": 5707
+            },
+            "stream_worker.process_vehicle_entry_init-vehicle-entry-init-topic-InitVehicleEntryRecord.vehicle_id-repartition": {
+                "0": 33
+            },
+            "stream_worker.process_vehicle_status-vehicle-status-topic-VehicleStatusRecord.vehicle_id-repartition": {
+                "0": 5925
+            },
+            "stream_worker.process_qtable_entry_update-qtable-entry-update-topic-QTableEntryUpdateRecord.x_node_id-repartition": {
+                "0": 91
+            },
+            "edge-change-topic": {
+                "0": 76
+            },
+            "qtable-entry-update-topic": {
+                "0": 76
+            },
+            "stream_worker.proccess_min_y_qvalue-edge-change-topic-EdgeChangeRecord.y_node_id-repartition": {
+                "0": 73
+            }
+        },
+        "topic_end_offsets": {
+            "qtable-entry-init-topic": {
+                "0": 17
+            },
+            "stream_worker.process_qtable_entry_init-qtable-entry-init-topic-InitQTableEntryRecord.node_id-repartition": {
+                "0": 15
+            },
+            "stream-service-app-qtable-changelog": {
+                "1": 21
+            },
+            "vehicle-entry-init-topic": {
+                "0": 24
+            },
+            "stream-service-app-vehicle-table-changelog": {
+                "1": 27
+            },
+            "vehicle-status-topic": {
+                "0": 5708
+            },
+            "stream_worker.process_vehicle_entry_init-vehicle-entry-init-topic-InitVehicleEntryRecord.vehicle_id-repartition": {
+                "0": 34
+            },
+            "stream_worker.process_vehicle_status-vehicle-status-topic-VehicleStatusRecord.vehicle_id-repartition": {
+                "0": 5926
+            },
+            "stream_worker.process_qtable_entry_update-qtable-entry-update-topic-QTableEntryUpdateRecord.x_node_id-repartition": {
+                "0": 92
+            },
+            "edge-change-topic": {
+                "0": 77
+            },
+            "qtable-entry-update-topic": {
+                "0": 77
+            },
+            "stream_worker.proccess_min_y_qvalue-edge-change-topic-EdgeChangeRecord.y_node_id-repartition": {
+                "0": 74
+            }
+        },
+        "rebalances": 1,
+        "rebalance_return_latency": [
+            1.8745335590210743
+        ],
+        "rebalance_end_latency": [
+            2.0437162310117856
+        ],
+        "rebalance_return_avg": 1.8745335590210743,
+        "rebalance_end_avg": 2.0437162310117856,
+        "http_response_codes": {
+            "500": 7066
+        },
+        "http_response_latency": [
+            0.0011942460259888321,
+            0.0009702240058686584,
+            0.001075218984624371,
+            0.0009578590106684715,
+            0.0012722179817501456,
+            0.0015540339809376746,
+            0.0010620109969750047,
+            0.0009955640125554055,
+            0.0009669959836173803,
+            0.0012294490006752312,
+            0.00101068799267523,
+            0.0009417029796168208,
+            0.0011749220138881356,
+            0.001054185995599255,
+            0.0010390059906058013,
+            0.0011790739954449236,
+            0.0010959010105580091,
+            0.0015514300030190498,
+            0.0012563880009111017,
+            0.000989471998764202,
+            0.0013208420132286847,
+            0.0009247059933841228,
+            0.0009724020201247185,
+            0.001371538994135335,
+            0.0009210489806719124,
+            0.001305290003074333,
+            0.0012358030071482062,
+            0.0009567039960529655,
+            0.0011402149975765496,
+            0.001068910991307348,
+            0.0010014970030169934,
+            0.000912085990421474,
+            0.0009532120020594448,
+            0.00095887400675565,
+            0.000999593990854919,
+            0.0009845079912338406,
+            0.0009899360011331737,
+            0.0009391319763381034,
+            0.0009432139922864735,
+            0.0009453560051042587,
+            0.001211492024594918,
+            0.001277405011933297,
+            0.0008745219965931028,
+            0.0009753740159794688,
+            0.0010858589957933873,
+            0.0012728569854516536,
+            0.0010413979762233794,
+            0.0011816580081358552,
+            0.0009562610066495836,
+            0.0008912129851523787,
+            0.0008945070148911327,
+            0.001103018003050238,
+            0.001318180002272129,
+            0.0009311989997513592,
+            0.0009783770074136555,
+            0.0014515130023937672,
+            0.0012030350044369698,
+            0.0010403409833088517,
+            0.0009269530128221959,
+            0.0009004479798022658,
+            0.00106386499828659,
+            0.0009431180078536272,
+            0.0010778760188259184,
+            0.0009468139905948192,
+            0.0008982270082924515,
+            0.000947031017858535,
+            0.0013310149952303618,
+            0.0008970009803306311,
+            0.0012072699901182204,
+            0.0010649260075297207,
+            0.0009113900014199317,
+            0.0009589229885023087,
+            0.0008922549895942211,
+            0.0009097779984585941,
+            0.0009383439901284873,
+            0.001064723008312285,
+            0.001238025986822322,
+            0.0010403470078017563,
+            0.0008717830060049891,
+            0.0011425330012571067,
+            0.0008677939767949283,
+            0.0011130539933219552,
+            0.0012403989967424423,
+            0.0009482780005782843,
+            0.0009025990148074925,
+            0.0009167059906758368,
+            0.0009656569745857269,
+            0.0009653779852669686,
+            0.000993218010989949,
+            0.0012579879839904606,
+            0.0011052940099034458,
+            0.0011383100063540041,
+            0.0012280549854040146,
+            0.0011576389952097088,
+            0.0008925920119509101,
+            0.0009721520182210952,
+            0.0009461999870836735,
+            0.000943886989261955,
+            0.0008863399852998555,
+            0.0017584529996383935
+        ],
+        "http_response_latency_avg": 0.0010766080085886642
+    }
+}

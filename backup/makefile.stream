@@ -1,0 +1,7 @@
+run:
+	ifeq ($(FRIGATE_HOME),)
+		$(error Must provide FRIGATE_HOME in environment)
+	endif
+	export PYTHONPATH=$(FRIGATE_HOME)
+	faust -A frigate.stream.stream_worker worker 
+	#-l info --logfile stream_service.log

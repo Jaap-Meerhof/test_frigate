@@ -1,0 +1,133 @@
+version: '3.2'
+networks:
+    default:
+      external:
+        name: frigate-network
+
+services:
+    frigate-zookeeper:
+        build: ./zookeeper
+        entrypoint: /opt/kafka_2.12-2.4.0/bin/zookeeper-server-start.sh zookeeper.properties
+        image: 127.0.0.1:5001/zookeeper
+        #ports:
+        #    - mode: ingress
+        #      protocol: tcp
+        #      published: 2181
+        #      target: 2181
+
+    frigate-kafka:
+        build: ./kafka        
+        entrypoint: ./wait-for-it.sh frigate-zookeeper:2181 --strict -- /opt/kafka_2.12-2.4.0/bin/kafka-server-start.sh server.properties
+        image: 127.0.0.1:5001/kafka
+        #ports:
+        #    - mode: ingress
+        #      protocol: tcp
+        #      published: 9092
+        #      target: 9092                
+        depends_on:
+            - frigate-zookeeper
+
+    frigate-kafka-setup:
+        build: ./kafka-setup
+        environment: 
+            - TOPIC_PARTITIONS=8
+            - KAFKA_HOME=/opt/kafka_2.12-2.4.0
+        entrypoint: ./wait-for-it.sh frigate-kafka:9092 --strict -- make createt
+        image: 127.0.0.1:5001/kafka-setup
+        #ports:
+        #    - mode: ingress
+        #      protocol: tcp
+        #      published: 8080
+        #      target: 8080             
+        depends_on:
+            - frigate-kafka
+ 
+    
+    frigate-stream:
+        build: ./stream
+        #entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust -A stream_worker worker -l error --logfile stream_service.log
+        entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust -A stream_worker worker -l info --web-bind 0.0.0.0 
+        image: 127.0.0.1:5001/stream
+        #ports:
+        #    - mode: ingress
+        #      protocol: tcp
+        #      published: 6066
+        #      target: 6066
+        deploy:
+            replicas: 8
+        environment: 
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_ROADNET_PATH=/var/data/irregular_grid_dag2/net.net.xml
+            - TOPIC_PARTITIONS=8
+            - KAFKA_BROKER_URL_2=kafka://frigate-kafka
+            - ETA=0.5
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+
+    frigate-endpoint:
+        build: ./endpoint
+        entrypoint: ./wait-for-it.sh frigate-stream:6066 --strict -- python endpoint_server.py
+        image: 127.0.0.1:5001/endpoint
+#        ports:
+#            - mode: ingress
+#              protocol: tcp
+#              published: 8009
+#              target: 8009
+        environment: 
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_ROADNET_PATH=/var/data/irregular_grid_dag2/net.net.xml
+            - ENDPOINT_SERVER_HOST=0.0.0.0
+            - ENDPOINT_SERVER_PORT=8009
+            - KAFKA_BROKER_URL=frigate-kafka:9092
+            - STREAM_SERVICE_WEB_URL=frigate-stream:6066
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+            - frigate-stream
+
+    frigate-simulator:
+        build: ./simulator
+        #entrypoint: ./wait-for-it.sh frigate-endpoint:8009 --strict -- python simulator.py
+        entrypoint: ./wait-for-it.sh frigate-endpoint:8009 --strict -- python simulator_server.py
+        image: 127.0.0.1:5001/simulator
+        environment: 
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_ROADNET_PATH=/var/data/irregular_grid_dag2/net.net.xml
+            - SUMO_STEPS=1000
+            - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
+            - SUMO_SIM_FILE=/var/data/irregular_grid_dag2/simulation.sumocfg
+            - VEHICLES_TO_ROUTE=PERIODICAL_STEP
+            - ROUTING_STEP_PERIOD=10            
+            - ENDPOINT_SERVER_PORT=8009
+            - ENDPOINT_SERVER_HOST=frigate-endpoint
+            - SIMULATOR_SERVER_PORT=8010
+            - SIMULATOR_SERVER_HOST=0.0.0.0
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 8010
+              target: 8010
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+            - frigate-stream
+            - frigate-endpoint

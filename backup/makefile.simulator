@@ -1,0 +1,16 @@
+clean:
+	./clean_sim.sh
+
+runc: clean
+	ifeq ($(FRIGATE_HOME),)
+		$(error Must provide FRIGATE_HOME in environment)
+	endif
+	export PYTHONPATH=$(FRIGATE_HOME)
+	python -m frigate.simulator.simulator
+
+run:
+	ifeq ($(FRIGATE_HOME),)
+		$(error Must provide FRIGATE_HOME in environment)
+	endif
+	export PYTHONPATH=$(FRIGATE_HOME)	
+	python -m frigate.simulator.simulator

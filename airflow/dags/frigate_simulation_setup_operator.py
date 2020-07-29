@@ -58,7 +58,7 @@ class FrigateSimulationSetupOperator(BaseOperator):
         super().__init__(*args, **kwargs)
         self.name = name
         self.graphml_roadnet_file = graphml_roadnet_file        
-        self.sim_folder = sim_folder
+        self.sim_folder = sim_folder # relative or full path of the new sim folder is needed here
         self.num_vehicles = num_vehicles
         self.source_nodes = source_nodes
         self.target_nodes = target_nodes
@@ -134,6 +134,7 @@ class FrigateSimulationSetupOperator(BaseOperator):
         self._generate_traffic(g=g)
 
         logger.info(f"generating SUMO NET XML file ...")
+        #TODO: add code to confirm the NET file conforms to the GraphML file
         self._generate_sumo_roadnet(g=g)
 
         logger.info(f"generating simulation cfg file ...")

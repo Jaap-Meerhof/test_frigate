@@ -16,10 +16,18 @@ from wait_for_tcp_port import wait_for_port
 from frigate_simulator_client import FrigateSimulatorClient
 from util import get_random_string
 
-#logging.basicConfig(level=logging.DEBUG,
+# logging.basicConfig(level=logging.DEBUG,
 #                    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s'
 #                    )
 logger = logging.getLogger("airflow.task")
+
+
+class SimulatorVehiclesToRoute:
+    CHANGED_EDGE = "CHANGED_EDGE"
+    ONLY_DEPARTED = "ONLY_DEPARTED"
+    PERIODICAL_STEP = "PERIODICAL_STEP"
+
+FRIGATE_STACK_NAME = "frigate"
 
 class FrigateSwarmOperator(BaseOperator):
 
@@ -29,12 +37,27 @@ class FrigateSwarmOperator(BaseOperator):
             name: str,
             scale: int,
             frigate_path: str,
+
+            sim_foldern: str,  # for the stream, endpoint and simulator. Only the folder name is needed, not the relative nor full path
+            eta: float,  # for stream
+            # for simulator. Only works for vehicles_to_route = SimulatorVehiclesToRoute.PERIODICAL_STEP
+            routing_step_period: str,
+            sim_steps: int,  # for simulator
+            # a constant for the simulator. Use the SimulatorVehiclesToRoute enum.
+            vehicles_to_route: str,
+
             *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.name = name
         self.scale = scale
         self.frigate_path = frigate_path
- 
+
+        self.sim_foldern = sim_foldern
+        self.eta = eta
+        self.routing_step_period = routing_step_period
+        self.sim_steps = sim_steps
+        self.vehicles_to_route = vehicles_to_route
+
     def _render_template(self):
         stream_servers = [{
             "name": f"frigate-stream-{i}",
@@ -49,7 +72,15 @@ class FrigateSwarmOperator(BaseOperator):
         wait_for_it_cmd = " ".join(wait_for_it_cmds)
 
         render = jinja2.Template(template).render(
-            stream_servers=stream_servers, wait_for_it_cmd=wait_for_it_cmd, scale=self.scale)
+            stream_servers=stream_servers,
+            wait_for_it_cmd=wait_for_it_cmd,
+            scale=self.scale,
+            sim_foldern=self.sim_foldern,
+            eta=self.eta,
+            routing_step_period=self.routing_step_period,
+            sim_steps=self.sim_steps,
+            vehicles_to_route=self.vehicles_to_route
+        )
         fp = open(f"{self.frigate_path}/frigate/docker-compose.yml", "w+")
         fp.write(render)
         fp.close()
@@ -67,12 +98,12 @@ class FrigateSwarmOperator(BaseOperator):
         #logger.info("run (stream)!!")
         logger.info("run (stream)!!")
         sim_client = FrigateSimulatorClient(
-            simulator_host="127.0.0.1", simulator_port=8010)        
+            simulator_host="127.0.0.1", simulator_port=8010)
         done = False
         for obj in sim_client.run_stream():
             # print(obj["message"])
             #print("/"*100, flush=True)
-            #logger.info("/"*100)
+            # logger.info("/"*100)
             #print(line, flush=True)
             logger.info(obj["message"])
             if obj["message"] == "Simulation done.":
@@ -122,8 +153,8 @@ class FrigateSwarmOperator(BaseOperator):
         logger.info("rendering template ...")
         self._render_template()
 
-        random_string = get_random_string(6)
-        stack_name = f"frigate-{random_string}"
+        #random_string = get_random_string(6)
+        stack_name = FRIGATE_STACK_NAME
 
         logger.info(f"deploying stack {stack_name} ...")
         self._deploy_stack(stack_name=stack_name)
@@ -131,10 +162,10 @@ class FrigateSwarmOperator(BaseOperator):
         time.sleep(180)
         logger.info("run and waiting for exit ...")
         done = self._wait_for_exit_stream()
-        
+
         logger.info(f"removing stack {stack_name} ...")
         self._remove_stack(stack_name=stack_name)
-        
+
         if not done:
             raise Exception("ERROR: Simulation did not finish correctly.")
 

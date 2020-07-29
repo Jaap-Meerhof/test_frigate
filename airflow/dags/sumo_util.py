@@ -39,7 +39,10 @@ def get_plainxml_net(g, nod_xml_filen, edg_xml_filen, net_xml_filen):
 
     # generate SUMO NET file with SUMO's netconvert command
     # netconvert --node-files=MyNodes.nod.xml --edge-files=MyEdges.edg.xml --output-file=MySUMONet.net.xml
-    sh.netconvert.bake(f"--node-files={nod_xml_filen}", f"--edge-files={edg_xml_filen}", f"--output-file={net_xml_filen}")
+    cmd = sh.netconvert.bake(f"--node-files={nod_xml_filen}", f"--edge-files={edg_xml_filen}", f"--output-file={net_xml_filen}")
+    print(cmd)
+    out = cmd()
+    print(out)
 
 
 def generate_traffic_sp(g, num_vehicles, sources, targets, routes_xml_filen, depart_step = 1):

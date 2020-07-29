@@ -35,10 +35,10 @@ services:
         environment: 
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/irregular_grid_dag2/net.net.xml
+            - SUMO_ROADNET_PATH=/var/data/{{sim_foldern}}/roadnet.net.xml
             - TOPIC_PARTITIONS={{scale}}
             - KAFKA_BROKER_URL_2=kafka://frigate-kafka
-            - ETA=0.5
+            - ETA={{eta}}
         ports:
             - mode: ingress
               protocol: tcp
@@ -61,7 +61,7 @@ services:
         environment: 
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/irregular_grid_dag2/net.net.xml
+            - SUMO_ROADNET_PATH=/var/data/{{sim_foldern}}/roadnet.net.xml
             - ENDPOINT_SERVER_HOST=0.0.0.0
             - ENDPOINT_SERVER_PORT=8009
             - KAFKA_BROKER_URL=frigate-kafka:9092
@@ -85,12 +85,12 @@ services:
         environment: 
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/irregular_grid_dag2/net.net.xml
-            - SUMO_STEPS=1000
+            - SUMO_ROADNET_PATH=/var/data/{{sim_foldern}}/roadnet.net.xml
+            - SUMO_STEPS={{sim_steps}}
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/irregular_grid_dag2/simulation.sumocfg
-            - VEHICLES_TO_ROUTE=PERIODICAL_STEP
-            - ROUTING_STEP_PERIOD=10            
+            - SUMO_SIM_FILE=/var/data/{{sim_foldern}}/simulation.sumocfg
+            - VEHICLES_TO_ROUTE={{vehicles_to_route}}
+            - ROUTING_STEP_PERIOD={{routing_step_period}}
             - ENDPOINT_SERVER_PORT=8009
             - ENDPOINT_SERVER_HOST=frigate-endpoint
             - SIMULATOR_SERVER_PORT=8010

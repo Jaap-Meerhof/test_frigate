@@ -5,6 +5,14 @@
 
 The reason to use pip for airflow is that the version in Conda repos is buggy and not the latest one (latest version as of June 21, 2020 is 1.10.11).
 
+# Dependencies
+
+1. Python 3 
+2. Various Python libraries found in environment.yml (install with conda)
+3. Airflow (install with pip install -r requeriments.txt)
+4. Docker and Docker-compose
+5. SUMO (only for the netconvert command used in FrigateSimulationSetupOperator)
+
 # Running
 
 1. Change to the airflow directory of Frigate.
@@ -33,4 +41,8 @@ airflow scheduler
 airflow webserver --port 8080
 ```
 
+6. Register the DAGs
+
 The dag's code is located inside the subfolder "dags"
+
+7. Open the Web server to trigger the DAGs

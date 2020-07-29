@@ -35,7 +35,7 @@ services:
         environment: 
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/test/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output_test/roadnet.net.xml
             - TOPIC_PARTITIONS=2
             - KAFKA_BROKER_URL_2=kafka://frigate-kafka
             - ETA=0.5
@@ -60,7 +60,7 @@ services:
         environment: 
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/test/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output_test/roadnet.net.xml
             - TOPIC_PARTITIONS=2
             - KAFKA_BROKER_URL_2=kafka://frigate-kafka
             - ETA=0.5
@@ -86,7 +86,7 @@ services:
         environment: 
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/test/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output_test/roadnet.net.xml
             - ENDPOINT_SERVER_HOST=0.0.0.0
             - ENDPOINT_SERVER_PORT=8009
             - KAFKA_BROKER_URL=frigate-kafka:9092
@@ -112,10 +112,10 @@ services:
         environment: 
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/test/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output_test/roadnet.net.xml
             - SUMO_STEPS=10
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/test/simulation.sumocfg
+            - SUMO_SIM_FILE=/var/data/output_test/simulation.sumocfg
             - VEHICLES_TO_ROUTE=PERIODICAL_STEP
             - ROUTING_STEP_PERIOD=10
             - ENDPOINT_SERVER_PORT=8009

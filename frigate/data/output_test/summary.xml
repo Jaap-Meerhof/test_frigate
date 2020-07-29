@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on Wed Jul 29 22:30:31 2020 by Eclipse SUMO Version 1.1.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="/var/data/output_test/roadnet.net.xml"/>
+        <route-files value="/var/data/output_test/routes.rou.xml"/>
+    </input>
+
+    <output>
+        <summary-output value="/var/data/output_test/summary.xml"/>
+        <save-state.period value="10"/>
+        <save-state.prefix value="state"/>
+        <save-state.suffix value=".xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <end value="5000"/>
+        <step-length value="0.2"/>
+    </time>
+
+    <traci_server>
+        <remote-port value="44969"/>
+    </traci_server>
+
+    <gui_only>
+        <tracker-interval value="0.2"/>
+    </gui_only>
+
+</configuration>
+-->
+
+<summary xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/summary_file.xsd">
+    <step time="0.00" loaded="2" inserted="1" running="1" waiting="0" ended="0" meanWaitingTime="0.00" meanTravelTime="-1.00" halting="1" meanSpeed="0.00" meanSpeedRelative="0.00" duration="1596061832270"/>
+    <step time="0.20" loaded="2" inserted="1" running="1" waiting="0" ended="0" meanWaitingTime="0.00" meanTravelTime="-1.00" halting="0" meanSpeed="0.47" meanSpeedRelative="0.03" duration="1596061832961"/>
+    <step time="0.40" loaded="2" inserted="1" running="1" waiting="0" ended="0" meanWaitingTime="0.00" meanTravelTime="-1.00" halting="0" meanSpeed="0.92" meanSpeedRelative="0.07" duration="1596061832974"/>
+    <step time="0.60" loaded="2" inserted="1" running="1" waiting="0" ended="0" meanWaitingTime="0.00" meanTravelTime="-1.00" halting="0" meanSpeed="1.44" meanSpeedRelative="0.10" duration="1596061832985"/>
+    <step time="0.80" loaded="2" inserted="1" running="1" waiting="0" ended="0" meanWaitingTime="0.00" meanTravelTime="-1.00" halting="0" meanSpeed="1.86" meanSpeedRelative="0.13" duration="1596061832999"/>
+    <step time="1.00" loaded="203" inserted="2" running="2" waiting="0" ended="0" meanWaitingTime="0.00" meanTravelTime="-1.00" halting="1" meanSpeed="1.12" meanSpeedRelative="0.08" duration="1596061833015"/>
+    <step time="1.20" loaded="203" inserted="2" running="2" waiting="0" ended="0" meanWaitingTime="0.00" meanTravelTime="-1.00" halting="0" meanSpeed="1.61" meanSpeedRelative="0.12" duration="1596061833123"/>
+    <step time="1.40" loaded="203" inserted="2" running="2" waiting="0" ended="0" meanWaitingTime="0.00" meanTravelTime="-1.00" halting="0" meanSpeed="2.08" meanSpeedRelative="0.15" duration="1596061833144"/>
+    <step time="1.60" loaded="203" inserted="2" running="2" waiting="0" ended="0" meanWaitingTime="0.00" meanTravelTime="-1.00" halting="0" meanSpeed="2.50" meanSpeedRelative="0.18" duration="1596061833163"/>
+    <step time="1.80" loaded="203" inserted="2" running="2" waiting="0" ended="0" meanWaitingTime="0.00" meanTravelTime="-1.00" halting="0" meanSpeed="2.88" meanSpeedRelative="0.21" duration="1596061833184"/>
+    <step time="2.00" loaded="203" inserted="3" running="3" waiting="0" ended="0" meanWaitingTime="0.00" meanTravelTime="-1.00" halting="1" meanSpeed="2.18" meanSpeedRelative="0.16" duration="1596061833211"/>
+</summary>

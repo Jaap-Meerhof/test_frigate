@@ -15,6 +15,7 @@ from airflow.utils.decorators import apply_defaults
 from wait_for_tcp_port import wait_for_port
 from frigate_simulator_client import FrigateSimulatorClient
 from util import get_random_string
+from distutils.dir_util import copy_tree
 
 # logging.basicConfig(level=logging.DEBUG,
 #                    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s'
@@ -38,13 +39,16 @@ class FrigateSwarmOperator(BaseOperator):
             scale: int,
             frigate_path: str,
 
-            sim_foldern: str,  # for the stream, endpoint and simulator. Only the folder name is needed, not the relative nor full path
+            input_sim_folder: str,  # path should NOT include trail '/'
+            output_sim_folder: str, # path should NOT include trail '/'
+            
             eta: float,  # for stream
             # for simulator. Only works for vehicles_to_route = SimulatorVehiclesToRoute.PERIODICAL_STEP
             routing_step_period: str,
             sim_steps: int,  # for simulator
             # a constant for the simulator. Use the SimulatorVehiclesToRoute enum.
             vehicles_to_route: str,
+            autoremove_stack: bool,
 
             *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -52,11 +56,14 @@ class FrigateSwarmOperator(BaseOperator):
         self.scale = scale
         self.frigate_path = frigate_path
 
-        self.sim_foldern = sim_foldern
+        self.input_sim_folder = input_sim_folder
+        self.output_sim_folder = output_sim_folder
+
         self.eta = eta
         self.routing_step_period = routing_step_period
         self.sim_steps = sim_steps
         self.vehicles_to_route = vehicles_to_route
+        self.autoremove_stack = autoremove_stack
 
     def _render_template(self):
         stream_servers = [{
@@ -71,11 +78,13 @@ class FrigateSwarmOperator(BaseOperator):
 
         wait_for_it_cmd = " ".join(wait_for_it_cmds)
 
+        sim_foldern = os.path.basename(self.output_sim_folder)
+
         render = jinja2.Template(template).render(
             stream_servers=stream_servers,
             wait_for_it_cmd=wait_for_it_cmd,
             scale=self.scale,
-            sim_foldern=self.sim_foldern,
+            sim_foldern=sim_foldern,
             eta=self.eta,
             routing_step_period=self.routing_step_period,
             sim_steps=self.sim_steps,
@@ -156,6 +165,10 @@ class FrigateSwarmOperator(BaseOperator):
         #random_string = get_random_string(6)
         stack_name = FRIGATE_STACK_NAME
 
+        logger.info("preparing sim folder ...")
+        os.mkdir(path=self.output_sim_folder)
+        copy_tree(src=self.input_sim_folder, dst=self.output_sim_folder)
+        
         logger.info(f"deploying stack {stack_name} ...")
         self._deploy_stack(stack_name=stack_name)
         logger.info("waiting 180 secs before running simulation ...")
@@ -163,8 +176,9 @@ class FrigateSwarmOperator(BaseOperator):
         logger.info("run and waiting for exit ...")
         done = self._wait_for_exit_stream()
 
-        logger.info(f"removing stack {stack_name} ...")
-        self._remove_stack(stack_name=stack_name)
+        if self.autoremove_stack:
+            logger.info(f"removing stack {stack_name} ...")
+            self._remove_stack(stack_name=stack_name)
 
         if not done:
             raise Exception("ERROR: Simulation did not finish correctly.")

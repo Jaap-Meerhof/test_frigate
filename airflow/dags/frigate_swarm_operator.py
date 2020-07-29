@@ -3,7 +3,6 @@
 Frigate Docker Swarm operator for Airflow.
 """
 
-import random
 import string
 import sh
 import os
@@ -15,6 +14,7 @@ from airflow.models.baseoperator import BaseOperator
 from airflow.utils.decorators import apply_defaults
 from wait_for_tcp_port import wait_for_port
 from frigate_simulator_client import FrigateSimulatorClient
+from util import get_random_string
 
 #logging.basicConfig(level=logging.DEBUG,
 #                    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s'
@@ -34,15 +34,7 @@ class FrigateSwarmOperator(BaseOperator):
         self.name = name
         self.scale = scale
         self.frigate_path = frigate_path
-
-    def _get_random_string(self, length):
-        """
-        Adapted from: https://pynative.com/python-generate-random-string/
-        """
-        letters = string.ascii_lowercase
-        result_str = ''.join(random.choice(letters) for i in range(length))
-        return result_str
-
+ 
     def _render_template(self):
         stream_servers = [{
             "name": f"frigate-stream-{i}",
@@ -130,7 +122,7 @@ class FrigateSwarmOperator(BaseOperator):
         logger.info("rendering template ...")
         self._render_template()
 
-        random_string = self._get_random_string(6)
+        random_string = get_random_string(6)
         stack_name = f"frigate-{random_string}"
 
         logger.info(f"deploying stack {stack_name} ...")
@@ -140,9 +132,8 @@ class FrigateSwarmOperator(BaseOperator):
         logger.info("run and waiting for exit ...")
         done = self._wait_for_exit_stream()
         
-        #TODO
-        #logger.info(f"removing stack {stack_name} ...")
-        #self._remove_stack(stack_name=stack_name)
+        logger.info(f"removing stack {stack_name} ...")
+        self._remove_stack(stack_name=stack_name)
         
         if not done:
             raise Exception("ERROR: Simulation did not finish correctly.")

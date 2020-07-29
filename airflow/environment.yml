@@ -7,3 +7,5 @@ dependencies:
   - jinja2
   - sh
   - requests
+  - python-igraph
+  - lxml

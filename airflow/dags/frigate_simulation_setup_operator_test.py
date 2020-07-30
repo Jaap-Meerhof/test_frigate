@@ -3,10 +3,10 @@ from frigate_simulation_setup_operator import FrigateSimulationSetupOperator, TR
 t1 = FrigateSimulationSetupOperator(
     name="FrigateSwarmOperator_TEST",
     graphml_roadnet_file="/home/alberto/Dropbox/alberto/projects/frigate/frigate/data/irregular_grid_dag2/irregular_grid_dag2.graphml",
-    sim_folder="/home/alberto/Dropbox/alberto/projects/frigate/frigate/data/test",
+    sim_folder="/home/alberto/Dropbox/alberto/projects/frigate/frigate/data/input_test",
     num_vehicles=1000,
     source_nodes=[0, 1, 2],
-    target_nodes=[33],
+    target_nodes=[28, 29, 30, 31, 32, 33],
     traffic_type=TRAFFIC_TYPE.shortest_path,
     depart_step=1,
     sim_begin=0,

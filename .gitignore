@@ -8,6 +8,7 @@ state*.xml
 *.tar.gz.1
 *.tar.gz.2
 *.db
+frigate/data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

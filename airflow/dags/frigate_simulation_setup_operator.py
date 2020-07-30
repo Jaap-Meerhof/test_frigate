@@ -74,22 +74,22 @@ class FrigateSimulationSetupOperator(BaseOperator):
     #    SOURCES = [0, 1, 2]
     #    TARGETS = [33] # in DAGs the target should be the node with outdegree = 0
 
-    def _generate_traffic(self, g) -> None:
+    def _generate_traffic(self, g, target_node) -> None:
 
-        routes_xml_file = f"{self.sim_folder}/routes.rou.xml"
+        routes_xml_file = f"{self.sim_folder}/{target_node}/routes.rou.xml"
 
         if self.traffic_type == TRAFFIC_TYPE.random:
             generate_traffic_rnd(g=g,
                                  num_vehicles=self.num_vehicles,
                                  sources=self.source_nodes,
-                                 targets=self.target_nodes,
+                                 targets=[target_node],
                                  routes_xml_filen=routes_xml_file,
                                  depart_step=self.depart_step)
         elif self.traffic_type == TRAFFIC_TYPE.shortest_path:
             generate_traffic_sp(g=g,
                                 num_vehicles=self.num_vehicles,
                                 sources=self.source_nodes,
-                                targets=self.target_nodes,
+                                targets=[target_node],
                                 routes_xml_filen=routes_xml_file,
                                 depart_step=self.depart_step)
         else:
@@ -97,15 +97,15 @@ class FrigateSimulationSetupOperator(BaseOperator):
                 f"Unkown specified traffic type: {self.traffic_type}")
         return
 
-    def _generate_sumo_roadnet(self, g) -> None:
+    def _generate_sumo_roadnet(self, g, target_node) -> None:
 
         get_plainxml_net(g=g,
-                         nod_xml_filen=f"{self.sim_folder}/nodes.nod.xml",
-                         edg_xml_filen=f"{self.sim_folder}/edges.edg.xml",
-                         net_xml_filen=f"{self.sim_folder}/roadnet.net.xml")
+                         nod_xml_filen=f"{self.sim_folder}/{target_node}/nodes.nod.xml",
+                         edg_xml_filen=f"{self.sim_folder}/{target_node}/edges.edg.xml",
+                         net_xml_filen=f"{self.sim_folder}/{target_node}/roadnet.net.xml")
         return
 
-    def _generate_sumo_cfg(self) -> None:
+    def _generate_sumo_cfg(self, target_node) -> None:
 
         render = jinja2.Template(SUMO_CFG_TEMPLATE).render(
             sumo_net_filen="roadnet.net.xml",
@@ -114,7 +114,7 @@ class FrigateSimulationSetupOperator(BaseOperator):
             sim_end=self.sim_end,
             sim_step_length=self.sim_step_length
         )
-        sumo_cfg_file = f"{self.sim_folder}/simulation.sumocfg"
+        sumo_cfg_file = f"{self.sim_folder}/{target_node}/simulation.sumocfg"
         fp = open(sumo_cfg_file, "w+")
         fp.write(render)
         fp.close()
@@ -126,20 +126,26 @@ class FrigateSimulationSetupOperator(BaseOperator):
         logger.info(f"loading graph {self.graphml_roadnet_file}")
         g = ig.Graph.Read_GraphML(self.graphml_roadnet_file)
         logger.info(f"loaded graph: {g.summary()}")
+        
+        for i, target_node in enumerate(self.target_nodes):
 
-        logger.info(f"creating sim folder {self.sim_folder}")
-        os.mkdir(self.sim_folder)
+            logger.info(f"preparing sim data for target node {target_node} ...")
 
-        logger.info(f"generating traffic of type {self.traffic_type}")
-        self._generate_traffic(g=g)
+            logger.info(f"creating sim folder {self.sim_folder}")
+            if i == 0:
+                os.mkdir(self.sim_folder)
+            os.mkdir(f"{self.sim_folder}/{target_node}")
 
-        logger.info(f"generating SUMO NET XML file ...")
-        #TODO: add code to confirm the NET file conforms to the GraphML file
-        self._generate_sumo_roadnet(g=g)
+            logger.info(f"generating traffic of type {self.traffic_type}")
+            self._generate_traffic(g=g, target_node=target_node)
 
-        logger.info(f"generating simulation cfg file ...")
-        self._generate_sumo_cfg()
- 
+            logger.info(f"generating SUMO NET XML file ...")
+            #TODO: add code to confirm the NET file conforms to the GraphML file
+            self._generate_sumo_roadnet(g=g, target_node=target_node)
+
+            logger.info(f"generating simulation cfg file ...")
+            self._generate_sumo_cfg(target_node=target_node)
+    
         logger.info(f"Done.")
 
         return f"Done {self.name}."

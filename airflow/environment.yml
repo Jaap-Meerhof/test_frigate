@@ -9,3 +9,5 @@ dependencies:
   - requests
   - python-igraph
   - lxml
+  - postgresql
+  - psycopg2

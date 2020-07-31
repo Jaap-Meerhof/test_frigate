@@ -12,8 +12,8 @@ from airflow.models.baseoperator import BaseOperator
 from airflow.utils.decorators import apply_defaults
 from sumo_util import generate_traffic_rnd, generate_traffic_sp, get_plainxml_net
 
-#logger = logging.getLogger("airflow.task")
-logger = logging.getLogger(__name__)
+#logger = logging.getLogger(__name__)
+logger = logging.getLogger("airflow.task")
 
 
 SUMO_CFG_TEMPLATE = """

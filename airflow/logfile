@@ -1,0 +1,47 @@
+2020-07-31 01:09:19.670 CDT [1261789] LOG:  starting PostgreSQL 12.2 on x86_64-pc-linux-gnu, compiled by x86_64-conda_cos6-linux-gnu-cc (crosstool-NG 1.23.0.449-a04d0) 7.3.0, 64-bit
+2020-07-31 01:09:19.671 CDT [1261789] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2020-07-31 01:09:19.673 CDT [1261789] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2020-07-31 01:09:19.686 CDT [1261790] LOG:  database system was shut down at 2020-07-31 01:08:50 CDT
+2020-07-31 01:09:19.689 CDT [1261789] LOG:  database system is ready to accept connections
+2020-07-31 01:09:48.785 CDT [1261973] ERROR:  role "alberto" already exists
+2020-07-31 01:09:48.785 CDT [1261973] STATEMENT:  CREATE ROLE alberto PASSWORD 'md563c053dc8c1b4663c74148932f67322d' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN;
+2020-07-31 01:11:00.810 CDT [1262462] FATAL:  role "postgres" does not exist
+2020-07-31 01:11:00.812 CDT [1262463] FATAL:  role "postgres" does not exist
+2020-07-31 01:11:30.318 CDT [1262664] FATAL:  database "airflow" does not exist
+2020-07-31 01:11:30.320 CDT [1262665] FATAL:  database "airflow" does not exist
+2020-07-31 01:12:05.453 CDT [1262910] ERROR:  relation "log" does not exist at character 13
+2020-07-31 01:12:05.453 CDT [1262910] STATEMENT:  INSERT INTO log (dttm, dag_id, task_id, event, execution_date, owner, extra) VALUES ('2020-07-31T06:12:05.444524+00:00'::timestamptz, NULL, NULL, 'cli_scheduler', NULL, 'alberto', '{"host_name": "alberto-Vostro-3490", "full_command": "[''/home/alberto/anaconda3/envs/frigate-airflow/bin/airflow'', ''scheduler'']"}') RETURNING log.id
+2020-07-31 01:12:05.458 CDT [1262910] ERROR:  relation "job" does not exist at character 13
+2020-07-31 01:12:05.458 CDT [1262910] STATEMENT:  INSERT INTO job (dag_id, state, job_type, start_date, end_date, latest_heartbeat, executor_class, hostname, unixname) VALUES (NULL, 'running', 'SchedulerJob', '2020-07-31T06:12:05.456471+00:00'::timestamptz, NULL, '2020-07-31T06:12:05.456488+00:00'::timestamptz, 'LocalExecutor', 'alberto-Vostro-3490', 'alberto') RETURNING job.id
+2020-07-31 02:10:30.817 CDT [1261789] LOG:  server process (PID 1320289) was terminated by signal 9: Killed
+2020-07-31 02:10:30.817 CDT [1261789] DETAIL:  Failed process was running: COMMIT
+2020-07-31 02:10:30.818 CDT [1261789] LOG:  terminating any other active server processes
+2020-07-31 02:10:30.818 CDT [1320148] WARNING:  terminating connection because of crash of another server process
+2020-07-31 02:10:30.818 CDT [1320148] DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+2020-07-31 02:10:30.818 CDT [1320148] HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+2020-07-31 02:10:30.818 CDT [1261794] WARNING:  terminating connection because of crash of another server process
+2020-07-31 02:10:30.818 CDT [1261794] DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+2020-07-31 02:10:30.818 CDT [1261794] HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+2020-07-31 02:10:30.821 CDT [1261789] LOG:  all server processes terminated; reinitializing
+2020-07-31 02:10:30.850 CDT [1323051] LOG:  database system was interrupted; last known up at 2020-07-31 02:07:03 CDT
+2020-07-31 02:10:30.890 CDT [1323051] LOG:  database system was not properly shut down; automatic recovery in progress
+2020-07-31 02:10:30.891 CDT [1323051] LOG:  redo starts at 0/1858F50
+2020-07-31 02:10:30.892 CDT [1323051] LOG:  invalid record length at 0/1874FD8: wanted 24, got 0
+2020-07-31 02:10:30.892 CDT [1323051] LOG:  redo done at 0/1874FB0
+2020-07-31 02:10:30.899 CDT [1261789] LOG:  database system is ready to accept connections
+2020-07-31 02:10:51.365 CDT [1261789] LOG:  server process (PID 1323095) was terminated by signal 9: Killed
+2020-07-31 02:10:51.365 CDT [1261789] DETAIL:  Failed process was running: COMMIT
+2020-07-31 02:10:51.365 CDT [1261789] LOG:  terminating any other active server processes
+2020-07-31 02:10:51.365 CDT [1323120] WARNING:  terminating connection because of crash of another server process
+2020-07-31 02:10:51.365 CDT [1323120] DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+2020-07-31 02:10:51.365 CDT [1323120] HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+2020-07-31 02:10:51.366 CDT [1323056] WARNING:  terminating connection because of crash of another server process
+2020-07-31 02:10:51.366 CDT [1323056] DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+2020-07-31 02:10:51.366 CDT [1323056] HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+2020-07-31 02:10:51.366 CDT [1261789] LOG:  all server processes terminated; reinitializing
+2020-07-31 02:10:51.380 CDT [1323421] LOG:  database system was interrupted; last known up at 2020-07-31 02:10:30 CDT
+2020-07-31 02:10:51.412 CDT [1323421] LOG:  database system was not properly shut down; automatic recovery in progress
+2020-07-31 02:10:51.413 CDT [1323421] LOG:  redo starts at 0/1875050
+2020-07-31 02:10:51.413 CDT [1323421] LOG:  invalid record length at 0/187A488: wanted 24, got 0
+2020-07-31 02:10:51.413 CDT [1323421] LOG:  redo done at 0/187A460
+2020-07-31 02:10:51.420 CDT [1261789] LOG:  database system is ready to accept connections

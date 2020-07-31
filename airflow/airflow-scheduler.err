@@ -1,0 +1,47 @@
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+Terminating on signal 15
+/site-packages/airflow/utils/cli.py", line 76, in wrapper
+    return f(*args, **kwargs)
+  File "/home/alberto/anaconda3/envs/frigate-airflow/lib/python3.8/site-packages/airflow/bin/cli.py", line 1212, in scheduler
+    with ctx:
+  File "/home/alberto/anaconda3/envs/frigate-airflow/lib/python3.8/site-packages/daemon/daemon.py", line 389, in __enter__
+    self.open()
+  File "/home/alberto/anaconda3/envs/frigate-airflow/lib/python3.8/site-packages/daemon/daemon.py", line 381, in open
+    self.pidfile.__enter__()
+  File "/home/alberto/anaconda3/envs/frigate-airflow/lib/python3.8/site-packages/lockfile/__init__.py", line 197, in __enter__
+    self.acquire()
+  File "/home/alberto/anaconda3/envs/frigate-airflow/lib/python3.8/site-packages/daemon/pidfile.py", line 57, in acquire
+    super(TimeoutPIDLockFile, self).acquire(timeout, *args, **kwargs)
+  File "/home/alberto/anaconda3/envs/frigate-airflow/lib/python3.8/site-packages/lockfile/pidlockfile.py", line 87, in acquire
+    raise AlreadyLocked("%s is already locked" %
+lockfile.AlreadyLocked: /home/alberto/Dropbox/alberto/projects/frigate/airflow/airflow-scheduler.pid is already locked

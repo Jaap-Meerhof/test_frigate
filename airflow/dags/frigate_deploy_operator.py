@@ -16,8 +16,8 @@ from wait_for_tcp_port import wait_for_port
 from util import get_random_string
 from distutils.dir_util import copy_tree
 
-logger = logging.getLogger(__name__)
-#logger = logging.getLogger("airflow.task")
+#logger = logging.getLogger(__name__)
+logger = logging.getLogger("airflow.task")
 
 class SimulatorVehiclesToRoute:
     CHANGED_EDGE = "CHANGED_EDGE"

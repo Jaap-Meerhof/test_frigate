@@ -4,8 +4,8 @@ from airflow.models.baseoperator import BaseOperator
 from airflow.utils.decorators import apply_defaults
 from frigate_deploy_operator import FRIGATE_STACK_NAME
 
-logger = logging.getLogger(__name__)
-#logger = logging.getLogger("airflow.task")
+#logger = logging.getLogger(__name__)
+logger = logging.getLogger("airflow.task")
 
 
 class FrigateRemoveOperator(BaseOperator):

@@ -3,8 +3,8 @@ from airflow.models.baseoperator import BaseOperator
 from airflow.utils.decorators import apply_defaults
 from frigate_simulator_client import FrigateSimulatorClient
 
-logger = logging.getLogger(__name__)
-#logger = logging.getLogger("airflow.task")
+#logger = logging.getLogger(__name__)
+logger = logging.getLogger("airflow.task")
 
 
 class FrigateSimulationOperator(BaseOperator):

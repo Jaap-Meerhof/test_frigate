@@ -9,6 +9,7 @@ state*.xml
 *.tar.gz.2
 *.db
 frigate/data/
+airflow/test/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

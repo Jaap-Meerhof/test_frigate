@@ -29,9 +29,9 @@ login-stream1:
 	$(info logging in service container ...)
 	docker exec -ti frigate_frigate-stream-1.1.$(docker service ps -f 'name=frigate_frigate-stream-1.1' frigate_frigate-stream-1 -q --no-trunc | head -n1) /bin/bash
 
-logs-simulator:
+logs-simulator0:
 	clear
-	docker service logs frigate_frigate-simulator -f
+	docker service logs frigate_frigate-simulator-0 -f
 
 logs-endpoint:
 	clear

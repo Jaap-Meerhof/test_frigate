@@ -15,20 +15,27 @@ The reason to use pip for airflow is that the version in Conda repos is buggy an
 
 # Running
 
-0. Activate the Conda environment "frigate-airflow" with environment.yml
+1. Create/activate the Conda environment "frigate-airflow" with environment.yml
 
-1. Create PostgreSQL user "root" passwd "root" and database "airflow"
+2. Initialize PostgreSQL and run the PostgreSQL server
+
+```
+initdb -D mylocal_db
+pg_ctl -D mylocal_db -l logfile start
+```
+
+3. Create PostgreSQL user "root" passwd "root" and database "airflow"
 
 ```
 createuser --encrypted --pwprompt root
 createdb --owner=root airflow
 ```
 
-TODO: double check this. Reference: https://gist.github.com/gwangjinkim/f13bf596fefa7db7d31c22efd1627c7a
+4. Init Airflow DB
 
-2. Change to the airflow directory of Frigate.
+Change to the airflow directory of Frigate.
 
-3. Set the env variable for the Airflow folder:
+Set the env variable for the Airflow folder:
 
 ```
 export AIRFLOW_HOME="$(pwd)"
@@ -43,26 +50,43 @@ export AIRFLOW__CORE__EXECUTOR=LocalExecutor
 
 In AIRFLOW__CORE__SQL_ALCHEMY_CONN replace "alberto" with the host username.
 
-4. then run:
+Initialize the Airflow DB:
+
 
 ```
 airflow initdb
 ```
 
-5. then run the Airflow scheduler:
+5. Run Airflow scheduler
 
 ```
 airflow scheduler
 ```
 
-6. And finally, the Web server
+6. Run Airflow Web server
+
+In a separated terminal, set all env vars again:
+
+```
+export AIRFLOW_HOME="$(pwd)"
+export AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://root:alberto@localhost:5432/airflow
+export POSTGRES_USER=root
+export POSTGRES_PASSWORD=root
+export POSTGRES_HOST=localhost
+export POSTGRES_PORT=5432
+export POSTGRES_DB=airflow
+export AIRFLOW__CORE__EXECUTOR=LocalExecutor
+```
+
+And finally:
 
 ```
 airflow webserver --port 8021
 ```
 
-6. Register the DAGs
+# Register the DAGs
 
 The dag's code is located inside the subfolder "dags"
 
-7. Open the Web server to trigger the DAGs
+# References
+- https://gist.github.com/gwangjinkim/f13bf596fefa7db7d31c22efd1627c7a

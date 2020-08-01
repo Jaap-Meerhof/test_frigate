@@ -10,6 +10,7 @@ state*.xml
 *.db
 frigate/data/
 airflow/test/
+airflow/mylocal_db/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

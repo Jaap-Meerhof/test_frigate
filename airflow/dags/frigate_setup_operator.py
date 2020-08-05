@@ -56,6 +56,8 @@ class FrigateSetupOperator(BaseOperator):
             sim_begin: float,
             sim_end: float,
             sim_step_length: float,
+            vehicle_id_suffix: str,
+            simulator_id: int,
             *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.name = name
@@ -70,10 +72,12 @@ class FrigateSetupOperator(BaseOperator):
         self.sim_begin = sim_begin
         self.sim_end = sim_end
         self.sim_step_length = sim_step_length
+        self.vehicle_id_suffix = vehicle_id_suffix
+        self.simulator_id = simulator_id
 
     def _generate_traffic(self, g) -> None:
 
-        routes_xml_file = f"{self.sim_folder}/{self.target_node}/routes.rou.xml"
+        routes_xml_file = f"{self.sim_folder}/{self.simulator_id}/{self.target_node}/routes.rou.xml"
 
         if self.traffic_type == TRAFFIC_TYPE.random:
             generate_traffic_rnd(g=g,
@@ -81,14 +85,16 @@ class FrigateSetupOperator(BaseOperator):
                                  sources=self.source_nodes,
                                  targets=[target_node],
                                  routes_xml_filen=routes_xml_file,
-                                 depart_step=self.depart_step)
+                                 depart_step=self.depart_step,
+                                 vehicle_id_suffix=self.vehicle_id_suffix)
         elif self.traffic_type == TRAFFIC_TYPE.shortest_path:
             generate_traffic_sp(g=g,
                                 num_vehicles=self.num_vehicles,
                                 sources=self.source_nodes,
                                 targets=[self.target_node],
                                 routes_xml_filen=routes_xml_file,
-                                depart_step=self.depart_step)
+                                depart_step=self.depart_step,
+                                vehicle_id_suffix=self.vehicle_id_suffix)
         else:
             raise Exception(
                 f"Unkown specified traffic type: {self.traffic_type}")
@@ -97,9 +103,9 @@ class FrigateSetupOperator(BaseOperator):
     def _generate_sumo_roadnet(self, g) -> None:
 
         get_plainxml_net(g=g,
-                         nod_xml_filen=f"{self.sim_folder}/{self.target_node}/nodes.nod.xml",
-                         edg_xml_filen=f"{self.sim_folder}/{self.target_node}/edges.edg.xml",
-                         net_xml_filen=f"{self.sim_folder}/{self.target_node}/roadnet.net.xml")
+                         nod_xml_filen=f"{self.sim_folder}/{self.simulator_id}/{self.target_node}/nodes.nod.xml",
+                         edg_xml_filen=f"{self.sim_folder}/{self.simulator_id}/{self.target_node}/edges.edg.xml",
+                         net_xml_filen=f"{self.sim_folder}/{self.simulator_id}/{self.target_node}/roadnet.net.xml")
         return
 
     def _generate_sumo_cfg(self) -> None:
@@ -111,7 +117,7 @@ class FrigateSetupOperator(BaseOperator):
             sim_end=self.sim_end,
             sim_step_length=self.sim_step_length
         )
-        sumo_cfg_file = f"{self.sim_folder}/{self.target_node}/simulation.sumocfg"
+        sumo_cfg_file = f"{self.sim_folder}/{self.simulator_id}/{self.target_node}/simulation.sumocfg"
         fp = open(sumo_cfg_file, "w+")
         fp.write(render)
         fp.close()
@@ -131,7 +137,8 @@ class FrigateSetupOperator(BaseOperator):
 
         if not os.path.exists(self.sim_folder):
             os.mkdir(self.sim_folder)
-        os.mkdir(f"{self.sim_folder}/{self.target_node}")
+        os.mkdir(f"{self.sim_folder}/{self.simulator_id}")        
+        os.mkdir(f"{self.sim_folder}/{self.simulator_id}/{self.target_node}")
 
         logger.info(f"generating traffic of type {self.traffic_type}")
         self._generate_traffic(g=g)

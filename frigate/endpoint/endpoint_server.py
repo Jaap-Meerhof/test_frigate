@@ -253,7 +253,7 @@ def get_route():
     start_node_id = road_net.getEdge(source_edge_id).getToNode().getID() 
     dest_node_id = road_net.getEdge(dest_edge_id).getToNode().getID()
      
-    logger.info(f"start node = {start_node_id} dest node = {dest_node_id}")
+    logger.info(f"[route] start node = {start_node_id} dest node = {dest_node_id}")
 
     route_nodes = []
     route_nodes.append(start_node_id)
@@ -271,33 +271,42 @@ def get_route():
     loop_detected = False
     while next_node_id != dest_node_id:
         next_node_qtable = get_qtable(next_node_id)
-        #logger.info(pprint.pprint(next_node_qtable))        
+        logger.info(f"[route] next_node_qtable = {next_node_qtable}")
         
+        assert next_node_qtable != None # got None as the Q-table of a node from an Stream Server!
+        
+        
+        logger.info(f"[route] dest_node_id = {dest_node_id} requested qtable of next_node_id = {next_node_id}")        
         nei_node_ids = list(next_node_qtable[next_node_id][dest_node_id].keys())
 
         # NOTE: heuristic to not to create loops, but there is no guarantee
+        logger.info(f"[route] (before) nei_node_ids of {next_node_id} = {nei_node_ids}")
         if prev_node_id in nei_node_ids:
             nei_node_ids.remove(prev_node_id) # don't go back
-                
+        logger.info(f"[route] (after)  nei_node_ids of {next_node_id} = {nei_node_ids}")
+
+        assert len(nei_node_ids) > 0 # no neighbors available to find the one with minimum Q-value!
+
         min_node_id = None
         min_dist = float('inf')
+        
         for nei_node_id in nei_node_ids:       
-            logger.info(f"next_node_id = {next_node_id} - dest_node_id {dest_node_id} - nei_node_id = {nei_node_id}")
+            logger.info(f"[route] next_node_id = {next_node_id} - dest_node_id {dest_node_id} - nei_node_id = {nei_node_id}")
             if next_node_qtable[next_node_id][dest_node_id][nei_node_id] < min_dist:
                 min_dist = next_node_qtable[next_node_id][dest_node_id][nei_node_id]
                 min_node_id = nei_node_id
-        assert min_node_id != None
+        assert min_node_id != None # no node with minimum Q-value found?
         prev_node_id = next_node_id
         next_node_id = min_node_id
 
         if next_node_id in route_nodes:
-            logger.warning(f"loop detected! aborting and notifying the client")
+            logger.warning(f"[route] loop detected! aborting and notifying the client")
             loop_detected = True
             break
         
-        logger.info(f"next node is {next_node_id}")        
+        logger.info(f"[route] next node is {next_node_id}")        
         route_nodes.append(next_node_id)
-        logger.info(f"node route so far: {route_nodes}")
+        logger.info(f"[route] node route so far: {route_nodes}")
 
     if loop_detected:
         res = {"error" : 1, "route" : []}

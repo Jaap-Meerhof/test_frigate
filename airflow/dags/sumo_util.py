@@ -45,7 +45,7 @@ def get_plainxml_net(g, nod_xml_filen, edg_xml_filen, net_xml_filen):
     print(out)
 
 
-def generate_traffic_sp(g, num_vehicles, sources, targets, routes_xml_filen, depart_step = 1):
+def generate_traffic_sp(g, num_vehicles, sources, targets, routes_xml_filen, vehicle_id_suffix, depart_step = 1):
     """
     Generates traffic routes between sources and targets 
     by means of Dijkstra shortest-paths by minimizing the hop count.
@@ -54,7 +54,7 @@ def generate_traffic_sp(g, num_vehicles, sources, targets, routes_xml_filen, dep
     routes = etree.Element('routes')
     depart = 0.0
     for v in range(num_vehicles):
-        vehicle = etree.SubElement(routes, 'vehicle', {"id":"v%d"%v, "depart":"%0.2f"%depart})
+        vehicle = etree.SubElement(routes, 'vehicle', {"id":f"v{v}_{vehicle_id_suffix}", "depart":"%0.2f"%depart})
         
         source = random.choice(sources)
         target = random.choice(targets)
@@ -87,7 +87,7 @@ def get_random_path(g, source, target):
 
     return path
 
-def generate_traffic_rnd(g, num_vehicles, sources, targets, routes_xml_filen, depart_step = 1):
+def generate_traffic_rnd(g, num_vehicles, sources, targets, routes_xml_filen, vehicle_id_suffix, depart_step = 1):
     """
     Generates random traffic routes between the sources and targets.
     NOTE: this is likely to get in an infinite loop for non-DAG road networks.
@@ -96,7 +96,7 @@ def generate_traffic_rnd(g, num_vehicles, sources, targets, routes_xml_filen, de
     routes = etree.Element('routes')
     depart = 0.0
     for v in range(num_vehicles):
-        vehicle = etree.SubElement(routes, 'vehicle', {"id":"v%d"%v, "depart":"%0.2f"%depart})
+        vehicle = etree.SubElement(routes, 'vehicle', {"id":f"v{v}_{vehicle_id_suffix}", "depart":"%0.2f"%depart})
         
         source = random.choice(sources)
         target = random.choice(targets)

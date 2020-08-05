@@ -33,6 +33,37 @@ logs-simulator0:
 	clear
 	docker service logs frigate_frigate-simulator-0 -f
 
+logs-simulator1:
+	clear
+	docker service logs frigate_frigate-simulator-1 -f
+
+logs-simulator2:
+	clear
+	docker service logs frigate_frigate-simulator-2 -f
+
+logs-simulator3:
+	clear
+	docker service logs frigate_frigate-simulator-3 -f
+
+logs-simulator4:
+	clear
+	docker service logs frigate_frigate-simulator-4 -f
+
+logs-simulator5:
+	clear
+	docker service logs frigate_frigate-simulator-5 -f
+
+logs-simulator6:
+	clear
+	docker service logs frigate_frigate-simulator-6 -f
+
+logs-simulator7:
+	clear
+	docker service logs frigate_frigate-simulator-7 -f
+
+
+
+
 logs-endpoint:
 	clear
 	docker service logs frigate_frigate-endpoint -f

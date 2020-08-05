@@ -2,7 +2,7 @@ from flask import Flask, Response
 import logging
 import json
 from configuration import SIMULATOR_SERVER_HOST, SIMULATOR_SERVER_PORT
-from simulator import run_simulation
+from simulator import run_simulation, initialize_qtable
 
 app = Flask(__name__)
 
@@ -41,6 +41,17 @@ def run_stream():
         json_dump = json.dumps( {"result":"error", "message": str(e)} ) + "\n"
         return Response(response=json_dump, status=200)
          
+@app.route('/init', methods=['GET'])
+def init():
+    logger.info("/init")
+    try:
+        initialize_qtable()        
+        json_dump = json.dumps( {"result":"success", "message": "OK"} )
+        return Response(response=json_dump, status=200)                
+    except Exception as e:
+        json_dump = json.dumps( {"result":"error", "message": str(e)} )
+        return Response(response=json_dump, status=200)
+
 if __name__ == '__main__':
     logger.info(f"starting Simulator Server ...")
     app.run(host=SIMULATOR_SERVER_HOST, port=int(SIMULATOR_SERVER_PORT))

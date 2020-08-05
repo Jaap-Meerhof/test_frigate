@@ -20,6 +20,16 @@ class FrigateSimulatorClient:
         else:
             raise Exception(f"ERROR: Frigate simulator returned {r.status_code}")
 
+    def initialize_qtable(self):
+                
+        url = f"{self.worker_uri}/init"
+        r = requests.get(url)
+
+        if r.status_code == 200:
+            return json.loads(r.content)
+        else:
+            raise Exception(f"ERROR: Frigate simulator returned {r.status_code}")
+
     def run_stream(self):
         """
         NOTE: this is a generator.

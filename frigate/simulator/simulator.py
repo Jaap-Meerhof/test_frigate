@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO,
                     )
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
+endpoint = EndPointClient()
 
 # simulation configuration
 #SUMO_STEPS = 10000
@@ -47,24 +47,10 @@ def getVehicleData(running_vehicle_ids):
         data[vehicle_id] = status
     return data
 
-def run_simulation(step_by_step=False):
-    
-    arrived_count = 0
-    
-    # simulation start
-    logger.info("starting SUMO ...")
-    print("starting SUMO ...")
-    traci.start(SUMO_CMD)
-    
-    endpoint = EndPointClient()
-    logger.info("starting simulation ...")
-
+def initialize_qtable():
     # initialize all Q-table entries in the Stream Service
     # and wait until all the new Q-Table entries are initialized
-    logger.info("requesting initialization of the Q-Table ...")
-    if step_by_step:
-        yield {"status": "INITIALIZING_QTABLE", "message": "Requesting initialization of the Q-Table."}
-
+    logger.info("requesting initialization of the Q-Table ...")    
     endpoint.send_qtable_init_request()    
     logger.info("waiting for the initialization of the Q-Table ...")    
     while not endpoint.is_qtable_initialized():
@@ -72,9 +58,22 @@ def run_simulation(step_by_step=False):
         time.sleep(0.5)
         pass    
     logger.info("Q-Table entries initialized!")
+    return
 
+
+def run_simulation(step_by_step=False):
+    
+    arrived_count = 0
+    
+    # simulation start
+    logger.info("starting SUMO ...")
+    print("starting SUMO ...")
+    traci.start(SUMO_CMD)   
+    
+    logger.info("starting simulation ...")
+    
     # start simulation
-    step = 0
+    step = 1
     loops = 0
     sim_vehicle_data = {}
     while step < SUMO_STEPS:

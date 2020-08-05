@@ -35,7 +35,7 @@ services:
         environment: 
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/output_test/31/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
             - TOPIC_PARTITIONS=2
             - KAFKA_BROKER_URL_2=kafka://frigate-kafka
             - ETA=0.5
@@ -60,7 +60,7 @@ services:
         environment: 
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/output_test/31/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
             - TOPIC_PARTITIONS=2
             - KAFKA_BROKER_URL_2=kafka://frigate-kafka
             - ETA=0.5
@@ -86,7 +86,7 @@ services:
         environment: 
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/output_test/31/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
             - ENDPOINT_SERVER_HOST=0.0.0.0
             - ENDPOINT_SERVER_PORT=8009
             - KAFKA_BROKER_URL=frigate-kafka:9092
@@ -113,10 +113,10 @@ services:
         environment: 
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/output_test/31/roadnet.net.xml
-            - SUMO_STEPS=10
+            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_STEPS=1000
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/output_test/31/simulation.sumocfg
+            - SUMO_SIM_FILE=/var/data/dag_test_output/0/33/simulation.sumocfg
             - VEHICLES_TO_ROUTE=PERIODICAL_STEP
             - ROUTING_STEP_PERIOD=10
             - ENDPOINT_SERVER_PORT=8009
@@ -150,10 +150,10 @@ services:
         environment: 
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/output_test/32/roadnet.net.xml
-            - SUMO_STEPS=10
+            - SUMO_ROADNET_PATH=/var/data/dag_test_output/1/33/roadnet.net.xml
+            - SUMO_STEPS=1000
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/output_test/32/simulation.sumocfg
+            - SUMO_SIM_FILE=/var/data/dag_test_output/1/33/simulation.sumocfg
             - VEHICLES_TO_ROUTE=PERIODICAL_STEP
             - ROUTING_STEP_PERIOD=10
             - ENDPOINT_SERVER_PORT=8009
@@ -187,10 +187,10 @@ services:
         environment: 
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/output_test/33/roadnet.net.xml
-            - SUMO_STEPS=10
+            - SUMO_ROADNET_PATH=/var/data/dag_test_output/2/33/roadnet.net.xml
+            - SUMO_STEPS=1000
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/output_test/33/simulation.sumocfg
+            - SUMO_SIM_FILE=/var/data/dag_test_output/2/33/simulation.sumocfg
             - VEHICLES_TO_ROUTE=PERIODICAL_STEP
             - ROUTING_STEP_PERIOD=10
             - ENDPOINT_SERVER_PORT=8009
@@ -202,6 +202,191 @@ services:
               protocol: tcp
               published: 8012
               target: 8012
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+            - frigate-endpoint
+            
+            - frigate-stream-0
+            
+            - frigate-stream-1
+            
+        
+    frigate-simulator-3:
+        build: ./simulator
+        entrypoint: ./wait-for-it.sh frigate-endpoint:8009 --strict -- python simulator_server.py
+        image: 127.0.0.1:5001/simulator
+        environment: 
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_ROADNET_PATH=/var/data/dag_test_output/3/33/roadnet.net.xml
+            - SUMO_STEPS=1000
+            - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
+            - SUMO_SIM_FILE=/var/data/dag_test_output/3/33/simulation.sumocfg
+            - VEHICLES_TO_ROUTE=PERIODICAL_STEP
+            - ROUTING_STEP_PERIOD=10
+            - ENDPOINT_SERVER_PORT=8009
+            - ENDPOINT_SERVER_HOST=frigate-endpoint
+            - SIMULATOR_SERVER_PORT=8013
+            - SIMULATOR_SERVER_HOST=0.0.0.0
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 8013
+              target: 8013
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+            - frigate-endpoint
+            
+            - frigate-stream-0
+            
+            - frigate-stream-1
+            
+        
+    frigate-simulator-4:
+        build: ./simulator
+        entrypoint: ./wait-for-it.sh frigate-endpoint:8009 --strict -- python simulator_server.py
+        image: 127.0.0.1:5001/simulator
+        environment: 
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_ROADNET_PATH=/var/data/dag_test_output/4/33/roadnet.net.xml
+            - SUMO_STEPS=1000
+            - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
+            - SUMO_SIM_FILE=/var/data/dag_test_output/4/33/simulation.sumocfg
+            - VEHICLES_TO_ROUTE=PERIODICAL_STEP
+            - ROUTING_STEP_PERIOD=10
+            - ENDPOINT_SERVER_PORT=8009
+            - ENDPOINT_SERVER_HOST=frigate-endpoint
+            - SIMULATOR_SERVER_PORT=8014
+            - SIMULATOR_SERVER_HOST=0.0.0.0
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 8014
+              target: 8014
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+            - frigate-endpoint
+            
+            - frigate-stream-0
+            
+            - frigate-stream-1
+            
+        
+    frigate-simulator-5:
+        build: ./simulator
+        entrypoint: ./wait-for-it.sh frigate-endpoint:8009 --strict -- python simulator_server.py
+        image: 127.0.0.1:5001/simulator
+        environment: 
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_ROADNET_PATH=/var/data/dag_test_output/5/33/roadnet.net.xml
+            - SUMO_STEPS=1000
+            - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
+            - SUMO_SIM_FILE=/var/data/dag_test_output/5/33/simulation.sumocfg
+            - VEHICLES_TO_ROUTE=PERIODICAL_STEP
+            - ROUTING_STEP_PERIOD=10
+            - ENDPOINT_SERVER_PORT=8009
+            - ENDPOINT_SERVER_HOST=frigate-endpoint
+            - SIMULATOR_SERVER_PORT=8015
+            - SIMULATOR_SERVER_HOST=0.0.0.0
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 8015
+              target: 8015
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+            - frigate-endpoint
+            
+            - frigate-stream-0
+            
+            - frigate-stream-1
+            
+        
+    frigate-simulator-6:
+        build: ./simulator
+        entrypoint: ./wait-for-it.sh frigate-endpoint:8009 --strict -- python simulator_server.py
+        image: 127.0.0.1:5001/simulator
+        environment: 
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_ROADNET_PATH=/var/data/dag_test_output/6/33/roadnet.net.xml
+            - SUMO_STEPS=1000
+            - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
+            - SUMO_SIM_FILE=/var/data/dag_test_output/6/33/simulation.sumocfg
+            - VEHICLES_TO_ROUTE=PERIODICAL_STEP
+            - ROUTING_STEP_PERIOD=10
+            - ENDPOINT_SERVER_PORT=8009
+            - ENDPOINT_SERVER_HOST=frigate-endpoint
+            - SIMULATOR_SERVER_PORT=8016
+            - SIMULATOR_SERVER_HOST=0.0.0.0
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 8016
+              target: 8016
+        volumes:
+            - type: bind
+              source: ./data
+              target: /var/data
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+            - frigate-endpoint
+            
+            - frigate-stream-0
+            
+            - frigate-stream-1
+            
+        
+    frigate-simulator-7:
+        build: ./simulator
+        entrypoint: ./wait-for-it.sh frigate-endpoint:8009 --strict -- python simulator_server.py
+        image: 127.0.0.1:5001/simulator
+        environment: 
+            - SUMO_HOME=/opt/sumo-1_1_0
+            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
+            - SUMO_ROADNET_PATH=/var/data/dag_test_output/7/33/roadnet.net.xml
+            - SUMO_STEPS=1000
+            - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
+            - SUMO_SIM_FILE=/var/data/dag_test_output/7/33/simulation.sumocfg
+            - VEHICLES_TO_ROUTE=PERIODICAL_STEP
+            - ROUTING_STEP_PERIOD=10
+            - ENDPOINT_SERVER_PORT=8009
+            - ENDPOINT_SERVER_HOST=frigate-endpoint
+            - SIMULATOR_SERVER_PORT=8017
+            - SIMULATOR_SERVER_HOST=0.0.0.0
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 8017
+              target: 8017
         volumes:
             - type: bind
               source: ./data

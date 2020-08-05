@@ -35,7 +35,7 @@ services:
         environment: 
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH={{simulator_servers[0].sim_folder}}/roadnet.net.xml
+            - SUMO_ROADNET_PATH={{simulator_servers[0].data_folder}}/roadnet.net.xml
             - TOPIC_PARTITIONS={{scale}}
             - KAFKA_BROKER_URL_2=kafka://frigate-kafka
             - ETA={{eta}}
@@ -61,7 +61,7 @@ services:
         environment: 
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH={{simulator_servers[0].sim_folder}}/roadnet.net.xml
+            - SUMO_ROADNET_PATH={{simulator_servers[0].data_folder}}/roadnet.net.xml
             - ENDPOINT_SERVER_HOST=0.0.0.0
             - ENDPOINT_SERVER_PORT=8009
             - KAFKA_BROKER_URL=frigate-kafka:9092
@@ -86,10 +86,10 @@ services:
         environment: 
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH={{simulator_server.sim_folder}}/roadnet.net.xml
+            - SUMO_ROADNET_PATH={{simulator_server.data_folder}}/roadnet.net.xml
             - SUMO_STEPS={{sim_steps}}
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE={{simulator_server.sim_folder}}/simulation.sumocfg
+            - SUMO_SIM_FILE={{simulator_server.data_folder}}/simulation.sumocfg
             - VEHICLES_TO_ROUTE={{vehicles_to_route}}
             - ROUTING_STEP_PERIOD={{routing_step_period}}
             - ENDPOINT_SERVER_PORT=8009

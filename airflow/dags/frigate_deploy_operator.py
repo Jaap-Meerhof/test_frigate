@@ -81,10 +81,10 @@ class FrigateDeployOperator(BaseOperator):
         # one simulator server per target node, each running a simulation 
         # for a different target node
         simulator_servers = [{
-            "name": f"frigate-simulator-{i}",
-            "sim_folder": f"/var/data/{sim_foldern}/{target_node}",
-            "port": 8010 + i
-        } for i, target_node in enumerate(self.target_nodes)]
+            "name": f"frigate-simulator-{simulator_id}",
+            "data_folder": f"/var/data/{sim_foldern}/{simulator_id}/{target_node}",
+            "port": 8010 + simulator_id
+        } for simulator_id, target_node in enumerate(self.target_nodes)]
 
         render = jinja2.Template(template).render(
             stream_servers=stream_servers,

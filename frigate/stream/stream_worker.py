@@ -25,10 +25,10 @@ logger = logging.getLogger(__name__)
 
 
 # statsd
-#DOCKER_HOST_IP = "192.168.8.5"
-#STATSD_PORT = 8125
-#statsd_mon = StatsdMonitor(host=DOCKER_HOST_IP, port=STATSD_PORT, prefix='stream-service-app') 
-statsd_mon = None
+DOCKER_HOST_IP = "192.168.8.5"
+STATSD_PORT = 8125
+statsd_mon = StatsdMonitor(host=DOCKER_HOST_IP, port=STATSD_PORT, prefix='stream-service-app') 
+#statsd_mon = None
 
 app = faust.App('stream-service-app',
                 broker=KAFKA_BROKER_URL_2, topic_partitions=TOPIC_PARTITIONS,

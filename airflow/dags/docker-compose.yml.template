@@ -54,16 +54,17 @@ services:
             - frigate-kafka-setup
     {% endfor %}
 
-    frigate-endpoint:
+    {% for endpoint_server in endpoint_servers %}
+    {{endpoint_server.name}}:
         build: ./endpoint
-        entrypoint: {{wait_for_it_cmd}} python endpoint_server.py
+        entrypoint: {{wait_for_it_cmd_endpoint}} python endpoint_server.py
         image: 127.0.0.1:5001/endpoint
         environment: 
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH={{simulator_servers[0].data_folder}}/roadnet.net.xml
             - ENDPOINT_SERVER_HOST=0.0.0.0
-            - ENDPOINT_SERVER_PORT=8009
+            - ENDPOINT_SERVER_PORT={{endpoint_server.port}}
             - KAFKA_BROKER_URL=frigate-kafka:9092
             - STREAM_SERVICE_WEB_URL=frigate-stream-0:6066
         volumes:
@@ -77,11 +78,28 @@ services:
             {% for stream_server in stream_servers %}
             - {{stream_server.name}}
             {% endfor %}
-    
+    {% endfor %}
+
+    frigate-endpoint-proxy:        
+        build: ./endpoint-proxy
+        image: 127.0.0.1:5001/endpoint-proxy
+        entrypoint: {{wait_for_it_cmd_endpoint_proxy}} nginx-debug -g 'daemon off;'
+        volumes:
+            - type: bind
+              source: ./endpoint-proxy/conf
+              target: /etc/nginx
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+            {% for endpoint_server in endpoint_servers %}
+            - {{endpoint_server.name}}
+            {% endfor %}
+        
     {% for simulator_server in simulator_servers %}
     {{simulator_server.name}}:
         build: ./simulator
-        entrypoint: ./wait-for-it.sh frigate-endpoint:8009 --strict -- python simulator_server.py
+        entrypoint: ./wait-for-it.sh frigate-endpoint-proxy:8009 --strict -- python simulator_server.py
         image: 127.0.0.1:5001/simulator
         environment: 
             - SUMO_HOME=/opt/sumo-1_1_0
@@ -93,7 +111,7 @@ services:
             - VEHICLES_TO_ROUTE={{vehicles_to_route}}
             - ROUTING_STEP_PERIOD={{routing_step_period}}
             - ENDPOINT_SERVER_PORT=8009
-            - ENDPOINT_SERVER_HOST=frigate-endpoint
+            - ENDPOINT_SERVER_HOST=frigate-endpoint-proxy
             - SIMULATOR_SERVER_PORT={{simulator_server.port}}
             - SIMULATOR_SERVER_HOST=0.0.0.0
         ports:
@@ -109,8 +127,11 @@ services:
             - frigate-zookeeper
             - frigate-kafka
             - frigate-kafka-setup
-            - frigate-endpoint
+            - frigate-endpoint-proxy
             {% for stream_server in stream_servers %}
             - {{stream_server.name}}
+            {% endfor %}
+            {% for endpoint_server in endpoint_servers %}
+            - {{endpoint_server.name}}
             {% endfor %}
         {% endfor %}

@@ -26,6 +26,23 @@ class SimulatorVehiclesToRoute:
 
 FRIGATE_STACK_NAME = "frigate"
 
+NGINX_ENDPOINT_TEMPLATE = """
+http {
+    upstream all {
+        {% for endpoint_server in endpoint_servers %}
+            server {{endpoint_server.name}}:{{endpoint_server.port}};
+        {% endfor %}
+    }
+    server {
+        listen 8009;
+        location / {
+            proxy_pass http://all/;
+        }
+    }
+}
+events {}
+"""
+
 class FrigateDeployOperator(BaseOperator):
 
     @apply_defaults
@@ -60,8 +77,28 @@ class FrigateDeployOperator(BaseOperator):
         self.routing_step_period = routing_step_period
         self.sim_steps = sim_steps
         self.vehicles_to_route = vehicles_to_route
+
+    def _render_ngnix_template(self):
+        """
+        Generates the configuration file for the NGINX load-balancer
+        behind the Endpoint servers.
+        """
+
+        # as many endpoint servers as SUMO simulator servers
+        endpoint_servers = [{
+            "name": f"frigate-endpoint-{i}",
+            "port": 5001 + i
+        } for i in range(len(self.target_nodes))]
+
+        render = jinja2.Template(NGINX_ENDPOINT_TEMPLATE).render(
+            endpoint_servers=endpoint_servers
+        )
+        fp = open(f"{self.frigate_path}/frigate/endpoint-proxy/conf/nginx.conf", "w+")
+        fp.write(render)
+        fp.close()
+
         
-    def _render_template(self):
+    def _render_stack_template(self):
 
         # as many stream servers as the scale value
         stream_servers = [{
@@ -71,10 +108,19 @@ class FrigateDeployOperator(BaseOperator):
         template = open(
             f"{self.frigate_path}/airflow/dags/docker-compose.yml.template", "r+").read()
 
-        wait_for_it_cmds = [
-            f"./wait-for-it.sh {stream_server['name']}:{stream_server['port']} --strict --" for stream_server in stream_servers]
+        # as many endpoint servers as SUMO simulator servers
+        endpoint_servers = [{
+            "name": f"frigate-endpoint-{i}",
+            "port": 5001 + i
+        } for i in range(len(self.target_nodes))]
 
-        wait_for_it_cmd = " ".join(wait_for_it_cmds)
+        wait_for_it_cmds_endpoint = [
+            f"./wait-for-it.sh {stream_server['name']}:{stream_server['port']} --strict --" for stream_server in stream_servers]
+        wait_for_it_cmd_endpoint = " ".join(wait_for_it_cmds_endpoint)
+
+        wait_for_it_cmds_endpoint_proxy = [
+            f"./wait-for-it.sh {endpoint_server['name']}:{endpoint_server['port']} --strict --" for endpoint_server in endpoint_servers]
+        wait_for_it_cmd_endpoint_proxy = " ".join(wait_for_it_cmds_endpoint_proxy)
 
         sim_foldern = os.path.basename(self.output_sim_folder)
 
@@ -88,14 +134,16 @@ class FrigateDeployOperator(BaseOperator):
 
         render = jinja2.Template(template).render(
             stream_servers=stream_servers,
-            wait_for_it_cmd=wait_for_it_cmd,
+            wait_for_it_cmd_endpoint=wait_for_it_cmd_endpoint,
+            wait_for_it_cmd_endpoint_proxy=wait_for_it_cmd_endpoint_proxy,
             scale=self.scale,
             sim_foldern=sim_foldern,
             eta=self.eta,
             routing_step_period=self.routing_step_period,
             sim_steps=self.sim_steps,
             vehicles_to_route=self.vehicles_to_route,
-            simulator_servers=simulator_servers
+            simulator_servers=simulator_servers,
+            endpoint_servers=endpoint_servers
         )
         fp = open(f"{self.frigate_path}/frigate/docker-compose.yml", "w+")
         fp.write(render)
@@ -134,13 +182,16 @@ class FrigateDeployOperator(BaseOperator):
 
         logger.info(f"Hello from operator {self.name}")
 
-        logger.info("rendering template ...")
-        self._render_template()
+        logger.info("rendering NGINX template ...")
+        self._render_ngnix_template()
+
+        logger.info("rendering stack template ...")
+        self._render_stack_template()
 
         #random_string = get_random_string(6)
         stack_name = FRIGATE_STACK_NAME
 
-        logger.info("preparing sim folder ...")
+        logger.info("copying sim folder ...")
         os.mkdir(path=self.output_sim_folder)
         copy_tree(src=self.input_sim_folder, dst=self.output_sim_folder)
         

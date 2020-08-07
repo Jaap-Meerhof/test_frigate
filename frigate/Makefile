@@ -31,7 +31,7 @@ login-stream1:
 
 logs-simulator0:
 	clear
-	docker service logs frigate_frigate-simulator-0 -f
+	docker service logs frigate_frigate-simulator-0 -f 
 
 logs-simulator1:
 	clear
@@ -64,9 +64,44 @@ logs-simulator7:
 
 
 
-logs-endpoint:
+logs-endpoint0:
 	clear
-	docker service logs frigate_frigate-endpoint -f
+	docker service logs frigate_frigate-endpoint-0 -f --tail 100
+
+
+logs-endpoint1:
+	clear
+	docker service logs frigate_frigate-endpoint-1 -f --tail 100
+
+logs-endpoint2:
+	clear
+	docker service logs frigate_frigate-endpoint-2 -f --tail 100
+
+logs-endpoint3:
+	clear
+	docker service logs frigate_frigate-endpoint-3 -f --tail 100
+
+logs-endpoint4:
+	clear
+	docker service logs frigate_frigate-endpoint-4 -f --tail 100
+
+logs-endpoint5:
+	clear
+	docker service logs frigate_frigate-endpoint-5 -f --tail 100
+
+logs-endpoint6:
+	clear
+	docker service logs frigate_frigate-endpoint-6 -f --tail 100
+
+logs-endpoint7:
+	clear
+	docker service logs frigate_frigate-endpoint-7 -f --tail 100
+
+
+logs-endpoint-proxy:
+	clear
+	docker service logs frigate_frigate-endpoint-proxy -f
+
 
 logs-kafka-setup:
 	clear
@@ -82,7 +117,7 @@ logs-zookeeper:
 
 logs-stream0:
 	clear
-	docker service logs frigate_frigate-stream-0 -f
+	docker service logs frigate_frigate-stream-0 -f --tail 100
 
 logs-stream1:
 	clear

@@ -43,6 +43,23 @@ http {
 events {}
 """
 
+NGINX_STREAM_TEMPLATE = """
+http {
+    upstream all {
+        {% for stream_server in stream_servers %}
+            server {{stream_server.name}}:{{stream_server.port}};
+        {% endfor %}
+    }
+    server {
+        listen 6066;
+        location / {
+            proxy_pass http://all/;
+        }
+    }
+}
+events {}
+"""
+
 class FrigateDeployOperator(BaseOperator):
 
     @apply_defaults
@@ -78,11 +95,13 @@ class FrigateDeployOperator(BaseOperator):
         self.sim_steps = sim_steps
         self.vehicles_to_route = vehicles_to_route
 
-    def _render_ngnix_template(self):
+    def _render_ngnix_templates(self):
         """
-        Generates the configuration file for the NGINX load-balancer
-        behind the Endpoint servers.
+        Generates the configuration file for the NGINX load-balancers
+        behind the Endpoint and the Stream servers.
         """
+        
+        ## Endpoint NGINX load-balancer
 
         # as many endpoint servers as SUMO simulator servers
         endpoint_servers = [{
@@ -97,26 +116,42 @@ class FrigateDeployOperator(BaseOperator):
         fp.write(render)
         fp.close()
 
+        ## Stream NGINX load-balancer
+
+        # as many endpoint servers as SUMO simulator servers
+        stream_servers = [{
+            "name": f"frigate-stream-{i}",
+            "port": 6066 + i
+        } for i in range(self.scale)]
+
+        render = jinja2.Template(NGINX_STREAM_TEMPLATE).render(
+            stream_servers=stream_servers
+        )
+        fp = open(f"{self.frigate_path}/frigate/stream-proxy/conf/nginx.conf", "w+")
+        fp.write(render)
+        fp.close()
+
         
     def _render_stack_template(self):
+
+        template = open(
+            f"{self.frigate_path}/airflow/dags/docker-compose.yml.template", "r+").read()
 
         # as many stream servers as the scale value
         stream_servers = [{
             "name": f"frigate-stream-{i}",
             "port": 6066 + i
         } for i in range(self.scale)]
-        template = open(
-            f"{self.frigate_path}/airflow/dags/docker-compose.yml.template", "r+").read()
-
+        
         # as many endpoint servers as SUMO simulator servers
         endpoint_servers = [{
             "name": f"frigate-endpoint-{i}",
             "port": 5001 + i
         } for i in range(len(self.target_nodes))]
 
-        wait_for_it_cmds_endpoint = [
+        wait_for_it_cmds_stream_proxy = [
             f"./wait-for-it.sh {stream_server['name']}:{stream_server['port']} --strict --" for stream_server in stream_servers]
-        wait_for_it_cmd_endpoint = " ".join(wait_for_it_cmds_endpoint)
+        wait_for_it_cmd_stream_proxy = " ".join(wait_for_it_cmds_stream_proxy)
 
         wait_for_it_cmds_endpoint_proxy = [
             f"./wait-for-it.sh {endpoint_server['name']}:{endpoint_server['port']} --strict --" for endpoint_server in endpoint_servers]
@@ -134,7 +169,7 @@ class FrigateDeployOperator(BaseOperator):
 
         render = jinja2.Template(template).render(
             stream_servers=stream_servers,
-            wait_for_it_cmd_endpoint=wait_for_it_cmd_endpoint,
+            wait_for_it_cmd_stream_proxy=wait_for_it_cmd_stream_proxy,
             wait_for_it_cmd_endpoint_proxy=wait_for_it_cmd_endpoint_proxy,
             scale=self.scale,
             sim_foldern=sim_foldern,
@@ -183,7 +218,7 @@ class FrigateDeployOperator(BaseOperator):
         logger.info(f"Hello from operator {self.name}")
 
         logger.info("rendering NGINX template ...")
-        self._render_ngnix_template()
+        self._render_ngnix_templates()
 
         logger.info("rendering stack template ...")
         self._render_stack_template()

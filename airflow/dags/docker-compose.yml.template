@@ -54,10 +54,26 @@ services:
             - frigate-kafka-setup
     {% endfor %}
 
+    frigate-stream-proxy:        
+        build: ./stream-proxy
+        image: 127.0.0.1:5001/stream-proxy
+        entrypoint: {{wait_for_it_cmd_stream_proxy}} nginx-debug -g 'daemon off;'
+        volumes:
+            - type: bind
+              source: ./stream-proxy/conf
+              target: /etc/nginx
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+            {% for stream_server in stream_servers %}
+            - {{stream_server.name}}
+            {% endfor %}    
+
     {% for endpoint_server in endpoint_servers %}
     {{endpoint_server.name}}:
         build: ./endpoint
-        entrypoint: {{wait_for_it_cmd_endpoint}} python endpoint_server.py
+        entrypoint: ./wait-for-it.sh frigate-stream-proxy:6066 --strict -- python endpoint_server.py
         image: 127.0.0.1:5001/endpoint
         environment: 
             - SUMO_HOME=/opt/sumo-1_1_0
@@ -66,7 +82,7 @@ services:
             - ENDPOINT_SERVER_HOST=0.0.0.0
             - ENDPOINT_SERVER_PORT={{endpoint_server.port}}
             - KAFKA_BROKER_URL=frigate-kafka:9092
-            - STREAM_SERVICE_WEB_URL=frigate-stream-0:6066
+            - STREAM_SERVICE_WEB_URL=frigate-stream-proxy:6066
         volumes:
             - type: bind
               source: ./data
@@ -78,6 +94,7 @@ services:
             {% for stream_server in stream_servers %}
             - {{stream_server.name}}
             {% endfor %}
+            - frigate-stream-proxy
     {% endfor %}
 
     frigate-endpoint-proxy:        
@@ -92,9 +109,14 @@ services:
             - frigate-zookeeper
             - frigate-kafka
             - frigate-kafka-setup
+            {% for stream_server in stream_servers %}
+            - {{stream_server.name}}
+            {% endfor %}
+            - frigate-stream-proxy
             {% for endpoint_server in endpoint_servers %}
             - {{endpoint_server.name}}
             {% endfor %}
+            
         
     {% for simulator_server in simulator_servers %}
     {{simulator_server.name}}:
@@ -127,11 +149,13 @@ services:
             - frigate-zookeeper
             - frigate-kafka
             - frigate-kafka-setup
-            - frigate-endpoint-proxy
             {% for stream_server in stream_servers %}
             - {{stream_server.name}}
             {% endfor %}
+            - frigate-stream-proxy
             {% for endpoint_server in endpoint_servers %}
             - {{endpoint_server.name}}
             {% endfor %}
+            - frigate-endpoint-proxy
+
         {% endfor %}

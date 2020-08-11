@@ -1,0 +1,31 @@
+--- producer.py	2020-02-25 13:31:50.000000000 -0600
++++ producer_rev.py	2020-08-10 20:45:04.522304523 -0500
+@@ -233,15 +233,25 @@
+         return serialized_key, serialized_value
+ 
+     def _partition(self, topic, partition, key, value,
+-                   serialized_key, serialized_value):
++                   serialized_key, serialized_value):                
+         if partition is not None:
+             assert partition >= 0
+             assert partition in self._metadata.partitions_for_topic(topic), \
+                 'Unrecognized partition'
+             return partition
+ 
+-        all_partitions = list(self._metadata.partitions_for_topic(topic))
+-        available = list(self._metadata.available_partitions_for_topic(topic))
++        #HACK: AGR: 'all_partitions' and 'available' are now computed manually
++        # based on the observation that they always correspond
++        # to a list [0...TOPIC_PARTITIONS], in order to fix a bug in Faust that prevents
++        # one of the workers to compute the arrays when a high number of workers 
++        # are running.
++
++        #all_partitions = list(self._metadata.partitions_for_topic(topic))        
++        import os
++        topic_partitions = int(os.environ["TOPIC_PARTITIONS"])
++        all_partitions = list(range(topic_partitions)) # hack
++        #available = list(self._metadata.available_partitions_for_topic(topic))        
++        available = list(range(topic_partitions)) # hack
+         return self._partitioner(
+             serialized_key, all_partitions, available)
+ 

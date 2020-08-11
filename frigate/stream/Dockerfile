@@ -24,3 +24,7 @@ RUN chmod +x wait-for-it.sh
 
 # Copy Stream server files
 COPY __init__.py stream_worker.py sumo_dijkstra.py configuration.py ./
+
+#AGR DEBUG
+COPY producer.py.patch .
+RUN patch /usr/local/lib/python3.7/site-packages/aiokafka/producer/producer.py < producer.py.patch

@@ -19,8 +19,9 @@ default_args = {
     'retry_delay': timedelta(minutes=1),
 }
 
-TARGET_NODES = [33, 33, 33, 33, 33, 33, 33, 33]
 SOURCE_NODES = [0, 1, 2]
+TARGET_NODES = [33, 33, 33, 33, 33, 33, 33, 33] # the length of this array defines the number of Simulator and Endpoint servers
+DEPLOY_SCALE = 8 # number of Stream workers
 
 
 with DAG(
@@ -52,7 +53,7 @@ with DAG(
              
     deploy_opr = FrigateDeployOperator(
         name="FrigateDeployOperator",
-        scale=2,
+        scale=DEPLOY_SCALE,
         frigate_path="/home/alberto/Dropbox/alberto/projects/frigate",
         input_sim_folder="/home/alberto/Dropbox/alberto/projects/frigate/frigate/data/dag_test_input",
         output_sim_folder="/home/alberto/Dropbox/alberto/projects/frigate/frigate/data/dag_test_output",

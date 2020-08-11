@@ -3,9 +3,11 @@ import pprint
 import logging
 import time
 import copy
+import statsd
 from configuration import SUMO_TOOLS_HOME, SUMO_STEPS, SUMO_BINARY, SUMO_SIM_FILE, SUMO_CMD, VEHICLES_TO_ROUTE, ROUTING_STEP_PERIOD
 from endpoint_client import EndPointClient
-    
+
+
 sys.path.append(SUMO_TOOLS_HOME)
 import traci
 
@@ -15,6 +17,15 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 endpoint = EndPointClient()
+
+
+# move this conf
+DOCKER_HOST_IP = "192.168.8.5"
+STATSD_PORT = 8125
+c = statsd.StatsClient(DOCKER_HOST_IP, STATSD_PORT, prefix="frigate-simulation")
+c.gauge('is-vehicle-init-errors-gauge', 0)
+c.gauge('reroute-errors-gauge', 0)
+
 
 # simulation configuration
 #SUMO_STEPS = 10000
@@ -94,10 +105,23 @@ def run_simulation(step_by_step=False):
         if len(departed_vehicle_ids) > 0:           
             logger.info("initializing newly departed vehicles ...")        
             endpoint.send_vehicles_initialization(departed_vehicle_ids)
-            while not endpoint.are_vehicles_initialized(departed_vehicle_ids):
-                #logger.info("sleeping ...")
-                time.sleep(0.5)
-                pass
+            
+            #TODO: IMPORTANT: find the problem that causes this with many stream servers. This is just a temporary hack to measure performance.                
+            while True:                
+                try:
+                    res = endpoint.are_vehicles_initialized(departed_vehicle_ids)
+                    if res:
+                        break
+                    #logger.info("sleeping ...")
+                    time.sleep(0.5)
+                    continue
+                except Exception as e:
+                    logger.warning(f"Error while checking if all vehicles are initialized. IGNORING and TRYING AGAIN.")
+                    c.incr('is-vehicle-init-errors')
+                    c.gauge('is-vehicle-init-errors-gauge', 1, delta=True)
+                    continue
+                
+            c.incr('init-vehicle-stages-done')
         
         # add new vehicles to the vehicle simulation data dictionary
         for vehicle_id in departed_vehicle_ids:
@@ -109,7 +133,7 @@ def run_simulation(step_by_step=False):
                 logger.info(f"vehicle {vehicle_id} bounded to {data[vehicle_id]['dest_edge_id']} changed edge from {sim_vehicle_data[vehicle_id]['edge_id']} to {data[vehicle_id]['edge_id']}")
                 vehicles_changed_edge.append(vehicle_id)
                 sim_vehicle_data[vehicle_id]["edge_id"] = data[vehicle_id]["edge_id"]
-        
+            
         # determine vehicles that are going to be routed in this step
         vehicles_to_route = None
         if VEHICLES_TO_ROUTE == "CHANGED_EDGE":
@@ -133,13 +157,24 @@ def run_simulation(step_by_step=False):
                 source_edge_id = data[vehicle_id]["edge_id"]
                 dest_edge_id = data[vehicle_id]["dest_edge_id"]
                 logger.info(f"requesting route for {vehicle_id} from {source_edge_id} to {dest_edge_id} ...")               
-                
-                route_req_res = endpoint.get_route(source_edge_id, dest_edge_id)
+
+                #TODO: IMPORTANT: find the problem that causes this with many stream servers. This is just a temporary hack to measure performance.                                
+                while True:                
+                    try:
+                        route_req_res = endpoint.get_route(source_edge_id, dest_edge_id)
+                        break
+                    except Exception as e:
+                        logger.warning(f"Error while retrieving route for vehicle {vehicle_id}: {e}. IGNORING and TRYING AGAIN.")
+                        c.incr('reroute-errors')
+                        c.gauge('reroute-errors-gauge', 1, delta=True)
+                        continue
+
                 if route_req_res["error"] == 0:
                     route = route_req_res["route"]
                     route = [source_edge_id] + route
                     logger.info(f"assigning route {route} to vehicle {vehicle_id} ...")
-                    traci.vehicle.setRoute(vehicle_id, route)                    
+                    traci.vehicle.setRoute(vehicle_id, route)
+                    c.incr('re-routings')
                 elif route_req_res["error"] == 1:
                     loops += 1
                     logger.warning(f"loop detected! using preset route [count {loops} source_edge {source_edge_id} vehicle {vehicle_id}]")
@@ -153,6 +188,7 @@ def run_simulation(step_by_step=False):
         for vehicle in data.keys():
             if not "n" in data[vehicle]["edge_id"]: #TODO: this is a hack, since getRoadId() not only returns edge IDs but also node IDs. review.
                 endpoint.send_status(vehicle_id=vehicle, edge_id=data[vehicle]["edge_id"], speed=data[vehicle]["speed"], dest_edge_id=data[vehicle]["dest_edge_id"])
+                c.incr('sent-vehicle-statuses')
         
         # send notifications for all ARRIVED vehicles to the Stream Service        
         if len(arrived_vehicle_ids) > 0:
@@ -188,6 +224,7 @@ def run_simulation(step_by_step=False):
         #logger.info("="*100)
             
         step += 1
+        c.incr('steps-done')
     
     logger.info("simulation done.")
     traci.close()

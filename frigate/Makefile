@@ -31,100 +31,130 @@ login-stream1:
 
 logs-simulator0:
 	clear
-	docker service logs frigate_frigate-simulator-0 -f --tail 100
+	docker service logs frigate_frigate-simulator-0 -f --tail 1000
 
 logs-simulator1:
 	clear
-	docker service logs frigate_frigate-simulator-1 -f --tail 100
+	docker service logs frigate_frigate-simulator-1 -f --tail 1000
 
 logs-simulator2:
 	clear
-	docker service logs frigate_frigate-simulator-2 -f --tail 100
+	docker service logs frigate_frigate-simulator-2 -f --tail 1000
 
 logs-simulator3:
 	clear
-	docker service logs frigate_frigate-simulator-3 -f --tail 100
+	docker service logs frigate_frigate-simulator-3 -f --tail 1000
 
 logs-simulator4:
 	clear
-	docker service logs frigate_frigate-simulator-4 -f --tail 100
+	docker service logs frigate_frigate-simulator-4 -f --tail 1000
 
 logs-simulator5:
 	clear
-	docker service logs frigate_frigate-simulator-5 -f --tail 100
+	docker service logs frigate_frigate-simulator-5 -f --tail 1000
 
 logs-simulator6:
 	clear
-	docker service logs frigate_frigate-simulator-6 -f --tail 100
+	docker service logs frigate_frigate-simulator-6 -f --tail 1000
 
 logs-simulator7:
 	clear
-	docker service logs frigate_frigate-simulator-7 -f --tail 100
+	docker service logs frigate_frigate-simulator-7 -f --tail 1000
 
 
 
 
 logs-endpoint0:
 	clear
-	docker service logs frigate_frigate-endpoint-0 -f --tail 100
+	docker service logs frigate_frigate-endpoint-0 -f --tail 1000
 
 
 logs-endpoint1:
 	clear
-	docker service logs frigate_frigate-endpoint-1 -f --tail 100
+	docker service logs frigate_frigate-endpoint-1 -f --tail 1000
 
 logs-endpoint2:
 	clear
-	docker service logs frigate_frigate-endpoint-2 -f --tail 100
+	docker service logs frigate_frigate-endpoint-2 -f --tail 1000
 
 logs-endpoint3:
 	clear
-	docker service logs frigate_frigate-endpoint-3 -f --tail 100
+	docker service logs frigate_frigate-endpoint-3 -f --tail 1000
 
 logs-endpoint4:
 	clear
-	docker service logs frigate_frigate-endpoint-4 -f --tail 100
+	docker service logs frigate_frigate-endpoint-4 -f --tail 1000
 
 logs-endpoint5:
 	clear
-	docker service logs frigate_frigate-endpoint-5 -f --tail 100
+	docker service logs frigate_frigate-endpoint-5 -f --tail 1000
 
 logs-endpoint6:
 	clear
-	docker service logs frigate_frigate-endpoint-6 -f --tail 100
+	docker service logs frigate_frigate-endpoint-6 -f --tail 1000
 
 logs-endpoint7:
 	clear
-	docker service logs frigate_frigate-endpoint-7 -f --tail 100
+	docker service logs frigate_frigate-endpoint-7 -f --tail 1000
 
 
 logs-endpoint-proxy:
 	clear
-	docker service logs frigate_frigate-endpoint-proxy -f --tail 100
+	docker service logs frigate_frigate-endpoint-proxy -f --tail 1000
 
 logs-stream-proxy:
 	clear
-	docker service logs frigate_frigate-stream-proxy -f --tail 100
+	docker service logs frigate_frigate-stream-proxy -f --tail 1000
 
 logs-kafka-setup:
 	clear
-	docker service logs frigate_frigate-kafka-setup -f --tail 100
+	docker service logs frigate_frigate-kafka-setup -f --tail 1000
 
 logs-kafka:
 	clear
-	docker service logs frigate_frigate-kafka -f --tail 100
+	docker service logs frigate_frigate-kafka -f --tail 1000
 
 logs-zookeeper:
 	clear
-	docker service logs frigate_frigate-zookeeper -f --tail 100
+	docker service logs frigate_frigate-zookeeper -f --tail 1000
 
 logs-stream0:
 	clear
-	docker service logs frigate_frigate-stream-0 -f --tail 100
+	docker service logs frigate_frigate-stream-0 -f --tail 1000
 
 logs-stream1:
 	clear
-	docker service logs frigate_frigate-stream-1 -f --tail 100
+	docker service logs frigate_frigate-stream-1 -f --tail 1000
+
+logs-stream2:
+	clear
+	docker service logs frigate_frigate-stream-2 -f --tail 1000
+
+logs-stream3:
+	clear
+	docker service logs frigate_frigate-stream-3 -f --tail 1000
+
+logs-stream4:
+	clear
+	docker service logs frigate_frigate-stream-4 -f --tail 1000
+
+logs-stream5:
+	clear
+	docker service logs frigate_frigate-stream-5 -f --tail 1000
+
+logs-stream6:
+	clear
+	docker service logs frigate_frigate-stream-6 -f --tail 1000
+
+logs-stream7:
+	clear
+	docker service logs frigate_frigate-stream-7 -f --tail 1000
+
+
+
+
+
+
 
 monitor-stream0:
 	watch "curl -G 127.0.0.1:6066/stats/ | python -m json.tool"

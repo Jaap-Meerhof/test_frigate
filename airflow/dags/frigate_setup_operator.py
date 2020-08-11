@@ -7,6 +7,7 @@ import random
 import igraph as ig
 import jinja2
 import logging
+import errno
 from lxml import etree as etree
 from airflow.models.baseoperator import BaseOperator
 from airflow.utils.decorators import apply_defaults
@@ -136,7 +137,14 @@ class FrigateSetupOperator(BaseOperator):
         logger.info(f"creating sim folder {self.sim_folder}")
 
         if not os.path.exists(self.sim_folder):
-            os.mkdir(self.sim_folder)
+            try:
+                os.mkdir(self.sim_folder)
+            except OSError as e:
+                if e.errno == errno.EEXIST: 
+                    # race condition when multiple concurrent operators are trying 
+                    # to create the same folder: just ignore, the folder is already there.
+                    pass
+
         os.mkdir(f"{self.sim_folder}/{self.simulator_id}")        
         os.mkdir(f"{self.sim_folder}/{self.simulator_id}/{self.target_node}")
 

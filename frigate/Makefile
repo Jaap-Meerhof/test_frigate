@@ -150,6 +150,9 @@ logs-stream7:
 	clear
 	docker service logs frigate_frigate-stream-7 -f --tail 1000
 
+logs-graphite:
+	clear
+	docker service logs frigate_frigate-graphite -f --tail 1000
 
 
 

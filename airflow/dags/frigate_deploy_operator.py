@@ -156,7 +156,7 @@ class FrigateDeployOperator(BaseOperator):
         wait_for_it_cmds_endpoint_proxy = [
             f"./wait-for-it.sh {endpoint_server['name']}:{endpoint_server['port']} --strict --" for endpoint_server in endpoint_servers]
         wait_for_it_cmd_endpoint_proxy = " ".join(wait_for_it_cmds_endpoint_proxy)
-
+        
         sim_foldern = os.path.basename(self.output_sim_folder)
 
         # one simulator server per target node, each running a simulation 
@@ -192,6 +192,39 @@ class FrigateDeployOperator(BaseOperator):
             wait_for_port(port=8010 + i, host="127.0.0.1", timeout=60)
             logger.info(f"Simulator at port {8010 + i} operational!")
         return
+
+    
+    def _build_stack(self):
+        try:
+            cwd = os.getcwd()
+            os.chdir(f"{self.frigate_path}/frigate")
+            cmd = sh.docker_compose.build.bake()
+            print(cmd)
+            out = cmd()
+            if "Error" in out:
+                raise Exception(
+                    f"An error occurred when running the command: {cmd} Output: {out}")
+        except sh.ErrorReturnCode as e:
+            raise Exception(
+                f"An error occurred when running the command: {cmd} Exception: {e} Stdout: {e.stdout} Stderr: {e.stderr}")                
+        finally:
+            os.chdir(cwd)
+
+    def _push_stack(self):
+        try:
+            cwd = os.getcwd()
+            os.chdir(f"{self.frigate_path}/frigate")
+            cmd = sh.docker_compose.push.bake()
+            print(cmd)
+            out = cmd()
+            if "Error" in out:
+                raise Exception(
+                    f"An error occurred when running the command: {cmd} Output: {out}")
+        except sh.ErrorReturnCode as e:
+            raise Exception(
+                f"An error occurred when running the command: {cmd} Exception: {e} Stdout: {e.stdout} Stderr: {e.stderr}")                
+        finally:
+            os.chdir(cwd)
         
     def _deploy_stack(self, stack_name):
         try:
@@ -206,10 +239,7 @@ class FrigateDeployOperator(BaseOperator):
                     f"An error occurred when running the command: {cmd} Output: {out}")
         except sh.ErrorReturnCode as e:
             raise Exception(
-                f"An error occurred when running the command: {cmd} Exception: {e} Stdout: {e.stdout} Stderr: {e.stderr}")
-        except Exception as e:
-            raise Exception(
-                f"An error occurred when running the command: {cmd} Exception: {e}")
+                f"An error occurred when running the command: {cmd} Exception: {e} Stdout: {e.stdout} Stderr: {e.stderr}")        
         finally:
             os.chdir(cwd)
     
@@ -229,6 +259,12 @@ class FrigateDeployOperator(BaseOperator):
         logger.info("copying sim folder ...")
         os.mkdir(path=self.output_sim_folder)
         copy_tree(src=self.input_sim_folder, dst=self.output_sim_folder)
+
+        logger.info(f"building stack {stack_name} ...")
+        self._build_stack()
+
+        logger.info(f"pushing stack {stack_name} ...")
+        self._push_stack()
         
         logger.info(f"deploying stack {stack_name} ...")
         self._deploy_stack(stack_name=stack_name)

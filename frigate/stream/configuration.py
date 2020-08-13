@@ -25,6 +25,11 @@ if 'ETA' in os.environ:
 else:
     raise Exception("please declare environment variable 'ETA'")
 
+if 'FRIGATE_SERVER_NAME' in os.environ:
+    FRIGATE_SERVER_NAME = os.environ['FRIGATE_SERVER_NAME']
+else:
+    raise Exception("please declare environment variable 'FRIGATE_SERVER_NAME'")
+
 # stream
 #KAFKA_BROKER_URL_2 = 'kafka://localhost'
 #ETA = 0.5

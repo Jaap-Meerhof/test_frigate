@@ -33,6 +33,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6066
         image: 127.0.0.1:5001/stream                
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-stream-0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -58,6 +59,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6067
         image: 127.0.0.1:5001/stream                
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-stream-1
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -83,6 +85,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6068
         image: 127.0.0.1:5001/stream                
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-stream-2
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -108,6 +111,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6069
         image: 127.0.0.1:5001/stream                
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-stream-3
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -133,6 +137,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6070
         image: 127.0.0.1:5001/stream                
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-stream-4
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -158,6 +163,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6071
         image: 127.0.0.1:5001/stream                
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-stream-5
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -183,6 +189,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6072
         image: 127.0.0.1:5001/stream                
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-stream-6
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -208,6 +215,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6073
         image: 127.0.0.1:5001/stream                
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-stream-7
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -265,6 +273,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-stream-proxy:6066 --strict -- python endpoint_server.py
         image: 127.0.0.1:5001/endpoint
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-endpoint-0
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -304,6 +313,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-stream-proxy:6066 --strict -- python endpoint_server.py
         image: 127.0.0.1:5001/endpoint
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-endpoint-1
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -343,6 +353,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-stream-proxy:6066 --strict -- python endpoint_server.py
         image: 127.0.0.1:5001/endpoint
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-endpoint-2
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -382,6 +393,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-stream-proxy:6066 --strict -- python endpoint_server.py
         image: 127.0.0.1:5001/endpoint
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-endpoint-3
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -421,6 +433,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-stream-proxy:6066 --strict -- python endpoint_server.py
         image: 127.0.0.1:5001/endpoint
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-endpoint-4
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -460,6 +473,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-stream-proxy:6066 --strict -- python endpoint_server.py
         image: 127.0.0.1:5001/endpoint
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-endpoint-5
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -499,6 +513,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-stream-proxy:6066 --strict -- python endpoint_server.py
         image: 127.0.0.1:5001/endpoint
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-endpoint-6
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -538,6 +553,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-stream-proxy:6066 --strict -- python endpoint_server.py
         image: 127.0.0.1:5001/endpoint
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-endpoint-7
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -628,6 +644,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-endpoint-proxy:8009 --strict -- python simulator_server.py
         image: 127.0.0.1:5001/simulator
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-simulator-0
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
@@ -689,13 +706,13 @@ services:
             - frigate-endpoint-7
             
             - frigate-endpoint-proxy
-
-        
+    
     frigate-simulator-1:
         build: ./simulator
         entrypoint: ./wait-for-it.sh frigate-endpoint-proxy:8009 --strict -- python simulator_server.py
         image: 127.0.0.1:5001/simulator
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-simulator-1
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/1/33/roadnet.net.xml
@@ -757,13 +774,13 @@ services:
             - frigate-endpoint-7
             
             - frigate-endpoint-proxy
-
-        
+    
     frigate-simulator-2:
         build: ./simulator
         entrypoint: ./wait-for-it.sh frigate-endpoint-proxy:8009 --strict -- python simulator_server.py
         image: 127.0.0.1:5001/simulator
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-simulator-2
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/2/33/roadnet.net.xml
@@ -825,13 +842,13 @@ services:
             - frigate-endpoint-7
             
             - frigate-endpoint-proxy
-
-        
+    
     frigate-simulator-3:
         build: ./simulator
         entrypoint: ./wait-for-it.sh frigate-endpoint-proxy:8009 --strict -- python simulator_server.py
         image: 127.0.0.1:5001/simulator
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-simulator-3
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/3/33/roadnet.net.xml
@@ -893,13 +910,13 @@ services:
             - frigate-endpoint-7
             
             - frigate-endpoint-proxy
-
-        
+    
     frigate-simulator-4:
         build: ./simulator
         entrypoint: ./wait-for-it.sh frigate-endpoint-proxy:8009 --strict -- python simulator_server.py
         image: 127.0.0.1:5001/simulator
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-simulator-4
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/4/33/roadnet.net.xml
@@ -961,13 +978,13 @@ services:
             - frigate-endpoint-7
             
             - frigate-endpoint-proxy
-
-        
+    
     frigate-simulator-5:
         build: ./simulator
         entrypoint: ./wait-for-it.sh frigate-endpoint-proxy:8009 --strict -- python simulator_server.py
         image: 127.0.0.1:5001/simulator
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-simulator-5
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/5/33/roadnet.net.xml
@@ -1029,13 +1046,13 @@ services:
             - frigate-endpoint-7
             
             - frigate-endpoint-proxy
-
-        
+    
     frigate-simulator-6:
         build: ./simulator
         entrypoint: ./wait-for-it.sh frigate-endpoint-proxy:8009 --strict -- python simulator_server.py
         image: 127.0.0.1:5001/simulator
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-simulator-6
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/6/33/roadnet.net.xml
@@ -1097,13 +1114,13 @@ services:
             - frigate-endpoint-7
             
             - frigate-endpoint-proxy
-
-        
+    
     frigate-simulator-7:
         build: ./simulator
         entrypoint: ./wait-for-it.sh frigate-endpoint-proxy:8009 --strict -- python simulator_server.py
         image: 127.0.0.1:5001/simulator
         environment: 
+            - FRIGATE_SERVER_NAME=frigate-simulator-7
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/dag_test_output/7/33/roadnet.net.xml
@@ -1165,5 +1182,70 @@ services:
             - frigate-endpoint-7
             
             - frigate-endpoint-proxy
+    
 
-        
+    frigate-graphite:        
+        build: ./graphite
+        image: 127.0.0.1:5001/graphite            
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 82
+              target: 80
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+            
+            - frigate-stream-0
+            
+            - frigate-stream-1
+            
+            - frigate-stream-2
+            
+            - frigate-stream-3
+            
+            - frigate-stream-4
+            
+            - frigate-stream-5
+            
+            - frigate-stream-6
+            
+            - frigate-stream-7
+            
+            - frigate-stream-proxy
+            
+            - frigate-endpoint-0
+            
+            - frigate-endpoint-1
+            
+            - frigate-endpoint-2
+            
+            - frigate-endpoint-3
+            
+            - frigate-endpoint-4
+            
+            - frigate-endpoint-5
+            
+            - frigate-endpoint-6
+            
+            - frigate-endpoint-7
+            
+            - frigate-endpoint-proxy
+            
+            - frigate-simulator-0
+            
+            - frigate-simulator-1
+            
+            - frigate-simulator-2
+            
+            - frigate-simulator-3
+            
+            - frigate-simulator-4
+            
+            - frigate-simulator-5
+            
+            - frigate-simulator-6
+            
+            - frigate-simulator-7
+            

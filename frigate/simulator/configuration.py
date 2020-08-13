@@ -58,6 +58,11 @@ if 'SIMULATOR_SERVER_PORT' in os.environ:
 else:
     raise Exception("please declare environment variable 'SIMULATOR_SERVER_PORT'")
 
+if 'FRIGATE_SERVER_NAME' in os.environ:
+    FRIGATE_SERVER_NAME = os.environ['FRIGATE_SERVER_NAME']
+else:
+    raise Exception("please declare environment variable 'FRIGATE_SERVER_NAME'")
+
 
 
 

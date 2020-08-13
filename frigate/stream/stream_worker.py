@@ -10,9 +10,8 @@ import sys
 import numpy as np  # to generate really small random numbers
 import sumo_dijkstra
 from faust.sensors.statsd import StatsdMonitor
-from configuration import KAFKA_BROKER_URL_2, ETA, SUMO_TOOLS_HOME, SUMO_ROADNET_PATH, TOPIC_PARTITIONS
+from configuration import KAFKA_BROKER_URL_2, ETA, SUMO_TOOLS_HOME, SUMO_ROADNET_PATH, TOPIC_PARTITIONS, FRIGATE_SERVER_NAME
 import statsd
-import socket 
 
 #from faust.web.apps.stats import blueprint
 
@@ -24,11 +23,10 @@ logging.basicConfig(level=logging.INFO,
                     )
 logger = logging.getLogger(__name__)
 
-
 # statsd
-DOCKER_HOST_IP = "192.168.8.4"
+GRAPHITE_HOST = "frigate-graphite"
 STATSD_PORT = 8125
-statsd_mon = StatsdMonitor(host=DOCKER_HOST_IP, port=STATSD_PORT, prefix='frigate-stream-faust') 
+statsd_mon = StatsdMonitor(host=GRAPHITE_HOST, port=STATSD_PORT, prefix='frigate-stream-faust') 
 #statsd_mon = None
 
 app = faust.App('frigate-stream-app',
@@ -37,17 +35,15 @@ app = faust.App('frigate-stream-app',
                 #stream_buffer_maxsize=12288)
 road_net = sumolib.net.readNet(SUMO_ROADNET_PATH)
 
-hostname = socket.gethostname()
+c = statsd.StatsClient(GRAPHITE_HOST, STATSD_PORT, prefix="frigate-stream")
 
-c = statsd.StatsClient(DOCKER_HOST_IP, STATSD_PORT, prefix="frigate-stream")
-
-c.gauge(f'frigate-stream.{hostname}.process_qtable_entry_init', 0)
-c.gauge(f'frigate-stream.{hostname}.process_vehicle_arrival', 0)
-c.gauge(f'frigate-stream.{hostname}.process_vehicle_status', 0)
-c.gauge(f'frigate-stream.{hostname}.proccess_min_y_qvalue', 0)
-c.gauge(f'frigate-stream.{hostname}.process_qtable_entry_update', 0)
-c.gauge(f'frigate-stream.{hostname}.get_qtable_entry', 0)
-c.gauge(f'frigate-stream.{hostname}.get_vehicle_entry', 0)
+c.gauge(f'.{FRIGATE_SERVER_NAME}.process_qtable_entry_init', 0)
+c.gauge(f'.{FRIGATE_SERVER_NAME}.process_vehicle_arrival', 0)
+c.gauge(f'.{FRIGATE_SERVER_NAME}.process_vehicle_status', 0)
+c.gauge(f'.{FRIGATE_SERVER_NAME}.proccess_min_y_qvalue', 0)
+c.gauge(f'.{FRIGATE_SERVER_NAME}.process_qtable_entry_update', 0)
+c.gauge(f'.{FRIGATE_SERVER_NAME}.get_qtable_entry', 0)
+c.gauge(f'.{FRIGATE_SERVER_NAME}.get_vehicle_entry', 0)
 
 #blueprint.register(app, url_prefix='/stats/')
 
@@ -213,8 +209,8 @@ async def process_qtable_entry_init(qtable_entry_init_stream):
         logger.info(
             f'[process_qtable_entry_init]')
 
-        c.incr(f'frigate-stream.{hostname}.process_qtable_entry_init')
-        c.gauge(f'frigate-stream.{hostname}.process_qtable_entry_init', 1, delta=True)
+        c.incr(f'.{FRIGATE_SERVER_NAME}.process_qtable_entry_init')
+        c.gauge(f'.{FRIGATE_SERVER_NAME}.process_qtable_entry_init', 1, delta=True)
 
         # node_id <- Q-Table entry id
         node_id = qtable_entry_init_rec.node_id
@@ -358,8 +354,8 @@ async def process_vehicle_arrival(vehicle_arrival_stream):
         Pre-conditions: it is assumed that the vehicle entry in the Vehicle Table has been previously initialized.
         """
 
-        c.incr(f'frigate-stream.{hostname}.process_vehicle_arrival')
-        c.gauge(f'frigate-stream.{hostname}.process_vehicle_arrival', 1, delta=True)
+        c.incr(f'.{FRIGATE_SERVER_NAME}.process_vehicle_arrival')
+        c.gauge(f'.{FRIGATE_SERVER_NAME}.process_vehicle_arrival', 1, delta=True)
 
         vehicle_id = vehicle_arrival_rec.vehicle_id
         current_edge_id = vehicle_table[vehicle_id]["edge_id"]
@@ -428,8 +424,8 @@ async def process_vehicle_status(vehicle_status_stream):
         logger.info(
             f'[process_vehicle_status] vehicle_id = {vehicle_status_rec.vehicle_id}')
         
-        c.incr(f'frigate-stream.{hostname}.process_vehicle_status')
-        c.gauge(f'frigate-stream.{hostname}.process_vehicle_status', 1, delta=True)
+        c.incr(f'.{FRIGATE_SERVER_NAME}.process_vehicle_status')
+        c.gauge(f'.{FRIGATE_SERVER_NAME}.process_vehicle_status', 1, delta=True)
 
         vehicle_id = vehicle_status_rec.vehicle_id
 
@@ -547,8 +543,8 @@ async def proccess_min_y_qvalue(edge_change_stream):
         logger.info(
             f'[proccess_min_y_qvalue]')
 
-        c.incr(f'frigate-stream.{hostname}.proccess_min_y_qvalue')
-        c.gauge(f'frigate-stream.{hostname}.proccess_min_y_qvalue', 1, delta=True)
+        c.incr(f'.{FRIGATE_SERVER_NAME}.proccess_min_y_qvalue')
+        c.gauge(f'.{FRIGATE_SERVER_NAME}.proccess_min_y_qvalue', 1, delta=True)
  
         y_node_id = edge_change_rec.y_node_id
         dest_node_id = edge_change_rec.dest_node_id
@@ -576,8 +572,8 @@ async def process_qtable_entry_update(qtable_entry_update_stream):
         logger.info(
             f'[process_qtable_entry_update]')
         
-        c.incr(f'frigate-stream.{hostname}.process_qtable_entry_update')
-        c.gauge(f'frigate-stream.{hostname}.process_qtable_entry_update', 1, delta=True)
+        c.incr(f'.{FRIGATE_SERVER_NAME}.process_qtable_entry_update')
+        c.gauge(f'.{FRIGATE_SERVER_NAME}.process_qtable_entry_update', 1, delta=True)
 
         x_node_id = qtable_entry_update_rec.x_node_id
         y_node_id = qtable_entry_update_rec.y_node_id
@@ -610,8 +606,8 @@ async def get_qtable_entry(web, request, node_id):
     logger.info(
             f'[get_qtable_entry] node_id = {node_id}')
     
-    c.incr(f'frigate-stream.{hostname}.get_qtable_entry')
-    c.gauge(f'frigate-stream.{hostname}.get_qtable_entry', 1, delta=True)
+    c.incr(f'.{FRIGATE_SERVER_NAME}.get_qtable_entry')
+    c.gauge(f'.{FRIGATE_SERVER_NAME}.get_qtable_entry', 1, delta=True)
 
     #node_id = request.query['node_id']
     
@@ -628,8 +624,8 @@ async def get_vehicle_entry(web, request, vehicle_id):
     logger.info(
             f'[get_vehicle_entry] vehicle_id = {vehicle_id}')
 
-    c.incr(f'frigate-stream.{hostname}.get_vehicle_entry')
-    c.gauge(f'frigate-stream.{hostname}.get_vehicle_entry', 1, delta=True)
+    c.incr(f'.{FRIGATE_SERVER_NAME}.get_vehicle_entry')
+    c.gauge(f'.{FRIGATE_SERVER_NAME}.get_vehicle_entry', 1, delta=True)
 
     #vehicle_id = request.query['vehicle_id']
     

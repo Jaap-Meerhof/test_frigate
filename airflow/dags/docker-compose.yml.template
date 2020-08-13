@@ -33,6 +33,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port {{stream_server.port}}
         image: 127.0.0.1:5001/stream                
         environment: 
+            - FRIGATE_SERVER_NAME={{stream_server.name}}
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_ROADNET_PATH={{simulator_servers[0].data_folder}}/roadnet.net.xml
@@ -76,6 +77,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-stream-proxy:6066 --strict -- python endpoint_server.py
         image: 127.0.0.1:5001/endpoint
         environment: 
+            - FRIGATE_SERVER_NAME={{endpoint_server.name}}
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH={{simulator_servers[0].data_folder}}/roadnet.net.xml
@@ -124,6 +126,7 @@ services:
         entrypoint: ./wait-for-it.sh frigate-endpoint-proxy:8009 --strict -- python simulator_server.py
         image: 127.0.0.1:5001/simulator
         environment: 
+            - FRIGATE_SERVER_NAME={{simulator_server.name}}
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH={{simulator_server.data_folder}}/roadnet.net.xml
@@ -157,5 +160,28 @@ services:
             - {{endpoint_server.name}}
             {% endfor %}
             - frigate-endpoint-proxy
+    {% endfor %}
 
-        {% endfor %}
+    frigate-graphite:        
+        build: ./graphite
+        image: 127.0.0.1:5001/graphite            
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 82
+              target: 80
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+            {% for stream_server in stream_servers %}
+            - {{stream_server.name}}
+            {% endfor %}
+            - frigate-stream-proxy
+            {% for endpoint_server in endpoint_servers %}
+            - {{endpoint_server.name}}
+            {% endfor %}
+            - frigate-endpoint-proxy
+            {% for simulator_server in simulator_servers %}
+            - {{simulator_server.name}}
+            {% endfor %}

@@ -4,7 +4,7 @@ import logging
 import time
 import copy
 import statsd
-from configuration import SUMO_TOOLS_HOME, SUMO_STEPS, SUMO_BINARY, SUMO_SIM_FILE, SUMO_CMD, VEHICLES_TO_ROUTE, ROUTING_STEP_PERIOD
+from configuration import SUMO_TOOLS_HOME, SUMO_STEPS, SUMO_BINARY, SUMO_SIM_FILE, SUMO_CMD, VEHICLES_TO_ROUTE, ROUTING_STEP_PERIOD, FRIGATE_SERVER_NAME
 from endpoint_client import EndPointClient
 
 
@@ -20,9 +20,9 @@ endpoint = EndPointClient()
 
 
 # move this conf
-DOCKER_HOST_IP = "192.168.8.4"
+GRAPHITE_HOST = "frigate-graphite"
 STATSD_PORT = 8125
-c = statsd.StatsClient(DOCKER_HOST_IP, STATSD_PORT, prefix="frigate-simulator")
+c = statsd.StatsClient(GRAPHITE_HOST, STATSD_PORT, prefix="frigate-simulator")
 #c.gauge('are-vehicle-init-errors-gauge', 0)
 #c.gauge('reroute-errors-gauge', 0)
 #c.gauge('are-vehicles-init-retrials', 0)

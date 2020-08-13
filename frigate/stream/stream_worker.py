@@ -9,11 +9,12 @@ import os
 import sys
 import numpy as np  # to generate really small random numbers
 import sumo_dijkstra
-from configuration import KAFKA_BROKER_URL_2, ETA, SUMO_TOOLS_HOME, SUMO_ROADNET_PATH, TOPIC_PARTITIONS
-
-from faust.web.apps.stats import blueprint
 from faust.sensors.statsd import StatsdMonitor
+from configuration import KAFKA_BROKER_URL_2, ETA, SUMO_TOOLS_HOME, SUMO_ROADNET_PATH, TOPIC_PARTITIONS
+import statsd
+import socket 
 
+#from faust.web.apps.stats import blueprint
 
 sys.path.append(SUMO_TOOLS_HOME)
 import sumolib
@@ -25,20 +26,36 @@ logger = logging.getLogger(__name__)
 
 
 # statsd
-DOCKER_HOST_IP = "192.168.8.5"
+DOCKER_HOST_IP = "192.168.8.4"
 STATSD_PORT = 8125
-statsd_mon = StatsdMonitor(host=DOCKER_HOST_IP, port=STATSD_PORT, prefix='stream-service-app') 
+statsd_mon = StatsdMonitor(host=DOCKER_HOST_IP, port=STATSD_PORT, prefix='frigate-stream-faust') 
 #statsd_mon = None
 
-app = faust.App('stream-service-app',
+app = faust.App('frigate-stream-app',
                 broker=KAFKA_BROKER_URL_2, topic_partitions=TOPIC_PARTITIONS,
                 monitor=statsd_mon)
+                #stream_buffer_maxsize=12288)
+road_net = sumolib.net.readNet(SUMO_ROADNET_PATH)
 
-blueprint.register(app, url_prefix='/stats/')
+hostname = socket.gethostname()
+
+c = statsd.StatsClient(DOCKER_HOST_IP, STATSD_PORT, prefix="frigate-stream")
+
+c.gauge(f'frigate-stream.{hostname}.process_qtable_entry_init', 0)
+c.gauge(f'frigate-stream.{hostname}.process_vehicle_arrival', 0)
+c.gauge(f'frigate-stream.{hostname}.process_vehicle_status', 0)
+c.gauge(f'frigate-stream.{hostname}.proccess_min_y_qvalue', 0)
+c.gauge(f'frigate-stream.{hostname}.process_qtable_entry_update', 0)
+c.gauge(f'frigate-stream.{hostname}.get_qtable_entry', 0)
+c.gauge(f'frigate-stream.{hostname}.get_vehicle_entry', 0)
+
+#blueprint.register(app, url_prefix='/stats/')
 
 # TODO: move this conf to another file
 #KAFKA_BROKER_URL = 'kafka://localhost'
 #ETA = 0.5
+
+
 
 #########################################
 # models
@@ -196,6 +213,9 @@ async def process_qtable_entry_init(qtable_entry_init_stream):
         logger.info(
             f'[process_qtable_entry_init]')
 
+        c.incr(f'frigate-stream.{hostname}.process_qtable_entry_init')
+        c.gauge(f'frigate-stream.{hostname}.process_qtable_entry_init', 1, delta=True)
+
         # node_id <- Q-Table entry id
         node_id = qtable_entry_init_rec.node_id
 
@@ -203,7 +223,7 @@ async def process_qtable_entry_init(qtable_entry_init_stream):
             f'[process_qtable_entry_init] initializing entry {node_id} ...')
 
         # get the neighbors of 'node_id'
-        road_net = sumolib.net.readNet(SUMO_ROADNET_PATH)
+        #road_net = sumolib.net.readNet(SUMO_ROADNET_PATH)
         node_outgoing_edges = road_net.getNode(node_id).getOutgoing()
 
         # for each possible destination 'dest_node_id' in the road network:
@@ -235,96 +255,96 @@ async def process_qtable_entry_init(qtable_entry_init_stream):
 
 # this one uses dijkstra
 # @app.agent(qtable_entry_init_topic)
-async def process_qtable_entry_init2(qtable_entry_init_stream):
-    """
-    Initializes a single entry 'node_id' of the Q-table.
-    The structure of the Q-table is as follows:
-    q_table <- { node_id -> { dest_node_id -> { nei_node_id -> float } } }
-    """
-    async for qtable_entry_init_rec in qtable_entry_init_stream:
-        logger.info(
-            f'[process_qtable_entry_init]')
+#async def process_qtable_entry_init2(qtable_entry_init_stream):
+#    """
+#    Initializes a single entry 'node_id' of the Q-table.
+#    The structure of the Q-table is as follows:
+#    q_table <- { node_id -> { dest_node_id -> { nei_node_id -> float } } }
+#    """
+#    async for qtable_entry_init_rec in qtable_entry_init_stream:
+#        logger.info(
+#            f'[process_qtable_entry_init]')
+#
+#        # node_id <- Q-Table entry id
+#        node_id = qtable_entry_init_rec.node_id
+#
+#        logger.info(
+#            f'[process_qtable_entry_init] initializing entry {node_id} ...')
+#
+#        # get the neighbors of 'node_id'
+#        road_net = sumolib.net.readNet(SUMO_ROADNET_PATH)
+#        node_outgoing_edges = road_net.getNode(node_id).getOutgoing()
+#
+#        # calculate shortest paths between node_id and all other nodes
+#        logger.info(
+#            f'[process_qtable_entry_init] computing shortest paths ...')
+#        shortest_paths = sumo_dijkstra.get_single_source_all_dest_paths(
+#            road_net, node_id)
+#
+#        logger.info(
+#            f'[process_qtable_entry_init] {shortest_paths}')
+#
+#        # for each possible destination 'dest_node_id' in the road network:
+#        #   for each node_id's outgoing neighbor 'nei_node_id':
+#        #       initialize qtable[node_id][dest_node_id][nei_node_id] with a small random number (according to the Q-routing paper)
+#        logger.info(
+#            f'[process_qtable_entry_init] initializing Q-Table entry ...')
+#        qtable[node_id] = {}
+#        for dest_node in road_net.getNodes():
+#            dest_node_id = dest_node.getID()
+#            qtable[node_id][dest_node_id] = {}
+#
+#            # get best neighbor from shortest path:
+#            best_nei_id = -1
+#            if node_id != dest_node_id:
+#                best_nei_id = shortest_paths[dest_node_id][1]
+#
+#            # initialize each outgoing neighbor
+#            for outgoing_edge in node_outgoing_edges:
+#                nei_node_id = outgoing_edge.getToNode().getID()
+#
+#                # destination is not node_id itself?
+#                if dest_node_id != node_id:
+#                    # is this the best (shortest path) neighbor?
+#                    if nei_node_id == best_nei_id:  # initialize it with lower value
+#                        qtable[node_id][dest_node_id][nei_node_id] = np.random.uniform(
+#                            10**(-20), 10**(-16))
+#                    else:
+#                        qtable[node_id][dest_node_id][nei_node_id] = np.random.uniform(
+#                            10**(-14), 10**(-10))
+#                else:
+#                    qtable[node_id][dest_node_id][nei_node_id] = float("inf")
+#
+#        logger.info(
+#            f'[process_qtable_entry_init] entry {node_id} initialized.')
 
-        # node_id <- Q-Table entry id
-        node_id = qtable_entry_init_rec.node_id
 
-        logger.info(
-            f'[process_qtable_entry_init] initializing entry {node_id} ...')
-
-        # get the neighbors of 'node_id'
-        road_net = sumolib.net.readNet(SUMO_ROADNET_PATH)
-        node_outgoing_edges = road_net.getNode(node_id).getOutgoing()
-
-        # calculate shortest paths between node_id and all other nodes
-        logger.info(
-            f'[process_qtable_entry_init] computing shortest paths ...')
-        shortest_paths = sumo_dijkstra.get_single_source_all_dest_paths(
-            road_net, node_id)
-
-        logger.info(
-            f'[process_qtable_entry_init] {shortest_paths}')
-
-        # for each possible destination 'dest_node_id' in the road network:
-        #   for each node_id's outgoing neighbor 'nei_node_id':
-        #       initialize qtable[node_id][dest_node_id][nei_node_id] with a small random number (according to the Q-routing paper)
-        logger.info(
-            f'[process_qtable_entry_init] initializing Q-Table entry ...')
-        qtable[node_id] = {}
-        for dest_node in road_net.getNodes():
-            dest_node_id = dest_node.getID()
-            qtable[node_id][dest_node_id] = {}
-
-            # get best neighbor from shortest path:
-            best_nei_id = -1
-            if node_id != dest_node_id:
-                best_nei_id = shortest_paths[dest_node_id][1]
-
-            # initialize each outgoing neighbor
-            for outgoing_edge in node_outgoing_edges:
-                nei_node_id = outgoing_edge.getToNode().getID()
-
-                # destination is not node_id itself?
-                if dest_node_id != node_id:
-                    # is this the best (shortest path) neighbor?
-                    if nei_node_id == best_nei_id:  # initialize it with lower value
-                        qtable[node_id][dest_node_id][nei_node_id] = np.random.uniform(
-                            10**(-20), 10**(-16))
-                    else:
-                        qtable[node_id][dest_node_id][nei_node_id] = np.random.uniform(
-                            10**(-14), 10**(-10))
-                else:
-                    qtable[node_id][dest_node_id][nei_node_id] = float("inf")
-
-        logger.info(
-            f'[process_qtable_entry_init] entry {node_id} initialized.')
-
-
-@app.agent(vehicle_entry_init_topic)
-async def process_vehicle_entry_init(vehicle_entry_init_stream):
-    """
-    Initializes the entry 'vehicle_id' in the Vehicle Table.    
-    """
-    async for vehicle_entry_init_rec in vehicle_entry_init_stream.group_by(InitVehicleEntryRecord.vehicle_id):
-        logger.info(
-            f'[process_vehicle_entry_init]')
-
-        vehicle_id = vehicle_entry_init_rec.vehicle_id
-
-        logger.info(
-            f'[process_vehicle_entry_init] initializing entry {vehicle_id} ...')
-
-        vehicle_table[vehicle_id] = {
-            "edge_id": "",
-            "edge_speed_sum": 0.0,
-            "edge_num_records": 0,
-            "total_travel_time": 0.0,
-            "traversed_edges": [],
-            "touched_nodes": [],
-            "has_arrived": False
-        }
-
-        logger.info(
-            f'[process_vehicle_entry_init] entry {vehicle_id} initialized.')
+#@app.agent(vehicle_entry_init_topic)
+#async def process_vehicle_entry_init(vehicle_entry_init_stream):
+#    """
+#    Initializes the entry 'vehicle_id' in the Vehicle Table.    
+#    """
+#    async for vehicle_entry_init_rec in vehicle_entry_init_stream.group_by(InitVehicleEntryRecord.vehicle_id):
+#        logger.info(
+#            f'[process_vehicle_entry_init]')
+#
+#        vehicle_id = vehicle_entry_init_rec.vehicle_id
+#
+#        logger.info(
+#            f'[process_vehicle_entry_init] initializing entry {vehicle_id} ...')
+#
+#        vehicle_table[vehicle_id] = {
+#            "edge_id": "",
+#            "edge_speed_sum": 0.0,
+#            "edge_num_records": 0,
+#            "total_travel_time": 0.0,
+#            "traversed_edges": [],
+#            "touched_nodes": [],
+#            "has_arrived": False
+#        }
+#
+#        logger.info(
+#            f'[process_vehicle_entry_init] entry {vehicle_id} initialized.')
 
 # TODO: FIX FOR TELEPORTED VEHICLES
 # TODO: WILL THIS WORK IF THE DESTINATION EDGE IS THE SOURCE EDGE?
@@ -338,11 +358,15 @@ async def process_vehicle_arrival(vehicle_arrival_stream):
         Pre-conditions: it is assumed that the vehicle entry in the Vehicle Table has been previously initialized.
         """
 
+        c.incr(f'frigate-stream.{hostname}.process_vehicle_arrival')
+        c.gauge(f'frigate-stream.{hostname}.process_vehicle_arrival', 1, delta=True)
+
         vehicle_id = vehicle_arrival_rec.vehicle_id
         current_edge_id = vehicle_table[vehicle_id]["edge_id"]
         prev_edge_id = current_edge_id
 
         assert not "n" in current_edge_id, "the destination (arrival) edge is a junction???"
+        assert vehicle_table[vehicle_id] != {}, f"Vehicle {vehicle_id} has not been previosly initialized?"
 
         if vehicle_table[vehicle_id]["edge_num_records"] > 0:
 
@@ -354,7 +378,7 @@ async def process_vehicle_arrival(vehicle_arrival_stream):
                 vehicle_table[vehicle_id]["edge_num_records"])
 
             # calculate the time taken by the vehicle to traverse the previous edge
-            road_net = sumolib.net.readNet(SUMO_ROADNET_PATH)
+            #road_net = sumolib.net.readNet(SUMO_ROADNET_PATH)
             prev_edge_length = road_net.getEdge(prev_edge_id).getLength()
             vehicle_time = prev_edge_length / float(vehicle_avg_speed)
             vehicle_table[vehicle_id]["total_travel_time"] += vehicle_time
@@ -403,8 +427,28 @@ async def process_vehicle_status(vehicle_status_stream):
         """
         logger.info(
             f'[process_vehicle_status] vehicle_id = {vehicle_status_rec.vehicle_id}')
+        
+        c.incr(f'frigate-stream.{hostname}.process_vehicle_status')
+        c.gauge(f'frigate-stream.{hostname}.process_vehicle_status', 1, delta=True)
 
         vehicle_id = vehicle_status_rec.vehicle_id
+
+        ##
+        # if vehicle is new, initialize it
+        if vehicle_table[vehicle_id] == {}:
+            logger.info(
+            f'[process_vehicle_status] initializing entry {vehicle_id} ...')
+            vehicle_table[vehicle_id] = {
+                "edge_id": "",
+                "edge_speed_sum": 0.0,
+                "edge_num_records": 0,
+                "total_travel_time": 0.0,
+                "traversed_edges": [],
+                "touched_nodes": [],
+                "has_arrived": False
+            }
+        ##    
+        
         prev_edge_id = vehicle_table[vehicle_id]["edge_id"]
         current_edge_id = vehicle_status_rec.edge_id
 
@@ -412,7 +456,7 @@ async def process_vehicle_status(vehicle_status_stream):
         if "n" in current_edge_id:
             continue
 
-        road_net = sumolib.net.readNet(SUMO_ROADNET_PATH)
+        #road_net = sumolib.net.readNet(SUMO_ROADNET_PATH)
 
         # started to traverse the first edge (i.e. it is the very first event for this vehicle)?
         if prev_edge_id == "" and vehicle_table[vehicle_id]["edge_num_records"] == 0:
@@ -503,6 +547,9 @@ async def proccess_min_y_qvalue(edge_change_stream):
         logger.info(
             f'[proccess_min_y_qvalue]')
 
+        c.incr(f'frigate-stream.{hostname}.proccess_min_y_qvalue')
+        c.gauge(f'frigate-stream.{hostname}.proccess_min_y_qvalue', 1, delta=True)
+ 
         y_node_id = edge_change_rec.y_node_id
         dest_node_id = edge_change_rec.dest_node_id
 
@@ -528,6 +575,9 @@ async def process_qtable_entry_update(qtable_entry_update_stream):
     async for qtable_entry_update_rec in qtable_entry_update_stream.group_by(QTableEntryUpdateRecord.x_node_id):
         logger.info(
             f'[process_qtable_entry_update]')
+        
+        c.incr(f'frigate-stream.{hostname}.process_qtable_entry_update')
+        c.gauge(f'frigate-stream.{hostname}.process_qtable_entry_update', 1, delta=True)
 
         x_node_id = qtable_entry_update_rec.x_node_id
         y_node_id = qtable_entry_update_rec.y_node_id
@@ -556,8 +606,13 @@ async def process_qtable_entry_update(qtable_entry_update_stream):
 @app.page('/qtable/{node_id}/')
 @app.table_route(table=qtable, match_info='node_id')
 async def get_qtable_entry(web, request, node_id):
+
     logger.info(
             f'[get_qtable_entry] node_id = {node_id}')
+    
+    c.incr(f'frigate-stream.{hostname}.get_qtable_entry')
+    c.gauge(f'frigate-stream.{hostname}.get_qtable_entry', 1, delta=True)
+
     #node_id = request.query['node_id']
     
     #logger.info(
@@ -572,6 +627,10 @@ async def get_qtable_entry(web, request, node_id):
 async def get_vehicle_entry(web, request, vehicle_id):
     logger.info(
             f'[get_vehicle_entry] vehicle_id = {vehicle_id}')
+
+    c.incr(f'frigate-stream.{hostname}.get_vehicle_entry')
+    c.gauge(f'frigate-stream.{hostname}.get_vehicle_entry', 1, delta=True)
+
     #vehicle_id = request.query['vehicle_id']
     
     #logger.info(
@@ -582,18 +641,18 @@ async def get_vehicle_entry(web, request, vehicle_id):
     })
 
 
-@app.page('/debug/')
-async def debug_page(web, request):
-    logger.info(
-        f'[debug_page] app.router.table_metadata(qtable) = {app.router.table_metadata(table_name="qtable")}')
-
-    for i in range(1, 10+1):
-        logger.info(
-            f'[debug_page] app.router.key_store(qtable, n{i}) = {app.router.key_store("qtable", f"n{i}")}')
-
-    return web.json({
-        "message": "ok"
-    })
+#@app.page('/debug/')
+#async def debug_page(web, request):
+#    logger.info(
+#        f'[debug_page] app.router.table_metadata(qtable) = {app.router.table_metadata(table_name="qtable")}')
+#
+#    for i in range(1, 10+1):
+#        logger.info(
+#            f'[debug_page] app.router.key_store(qtable, n{i}) = {app.router.key_store("qtable", f"n{i}")}')
+#
+#    return web.json({
+#        "message": "ok"
+#    })
 
 #########################################
 # Main

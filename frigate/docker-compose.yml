@@ -1249,3 +1249,79 @@ services:
             
             - frigate-simulator-7
             
+
+    frigate-monitor:        
+        build: ./monitor
+        image: 127.0.0.1:5001/monitor            
+        entrypoint: ./wait-for-it.sh frigate-graphite:80 --strict -- python monitor_server.py
+        environment: 
+            - GRAPHITE_HOST=frigate-graphite
+            - GRAPHITE_PORT=80
+            - NUM_STREAM_SERVERS=8
+        volumes:
+            - type: bind
+              source: ./data/monitor
+              target: /output
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 83
+              target: 83
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+            
+            - frigate-stream-0
+            
+            - frigate-stream-1
+            
+            - frigate-stream-2
+            
+            - frigate-stream-3
+            
+            - frigate-stream-4
+            
+            - frigate-stream-5
+            
+            - frigate-stream-6
+            
+            - frigate-stream-7
+            
+            - frigate-stream-proxy
+            
+            - frigate-endpoint-0
+            
+            - frigate-endpoint-1
+            
+            - frigate-endpoint-2
+            
+            - frigate-endpoint-3
+            
+            - frigate-endpoint-4
+            
+            - frigate-endpoint-5
+            
+            - frigate-endpoint-6
+            
+            - frigate-endpoint-7
+            
+            - frigate-endpoint-proxy
+            
+            - frigate-simulator-0
+            
+            - frigate-simulator-1
+            
+            - frigate-simulator-2
+            
+            - frigate-simulator-3
+            
+            - frigate-simulator-4
+            
+            - frigate-simulator-5
+            
+            - frigate-simulator-6
+            
+            - frigate-simulator-7
+            
+            - frigate-graphite

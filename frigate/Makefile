@@ -155,6 +155,10 @@ logs-graphite:
 	docker service logs frigate_frigate-graphite -f --tail 1000
 
 
+logs-monitor:
+	clear
+	docker service logs frigate_frigate-monitor -f --tail 1000
+
 
 
 

@@ -185,3 +185,37 @@ services:
             {% for simulator_server in simulator_servers %}
             - {{simulator_server.name}}
             {% endfor %}
+
+    frigate-monitor:        
+        build: ./monitor
+        image: 127.0.0.1:5001/monitor            
+        entrypoint: ./wait-for-it.sh frigate-graphite:80 --strict -- python monitor_server.py
+        environment: 
+            - GRAPHITE_HOST=frigate-graphite
+            - GRAPHITE_PORT=80
+            - NUM_STREAM_SERVERS={{scale}}
+        volumes:
+            - type: bind
+              source: ./data/monitor
+              target: /output
+        ports:
+            - mode: ingress
+              protocol: tcp
+              published: 83
+              target: 83
+        depends_on:
+            - frigate-zookeeper
+            - frigate-kafka
+            - frigate-kafka-setup
+            {% for stream_server in stream_servers %}
+            - {{stream_server.name}}
+            {% endfor %}
+            - frigate-stream-proxy
+            {% for endpoint_server in endpoint_servers %}
+            - {{endpoint_server.name}}
+            {% endfor %}
+            - frigate-endpoint-proxy
+            {% for simulator_server in simulator_servers %}
+            - {{simulator_server.name}}
+            {% endfor %}
+            - frigate-graphite

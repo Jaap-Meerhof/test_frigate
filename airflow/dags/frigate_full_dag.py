@@ -7,6 +7,7 @@ from frigate_deploy_operator import FrigateDeployOperator, SimulatorVehiclesToRo
 from frigate_simulation_operator import FrigateSimulationOperator
 from frigate_remove_operator import FrigateRemoveOperator
 from frigate_initialization_operator import FrigateInitializationOperator
+from frigate_monitor_operator import FrigateMonitorOperator
 
 default_args = {
     'owner': 'airflow',
@@ -84,14 +85,20 @@ with DAG(
         task_id="FrigateRemoveOperator"
     )
 
+    mon_opr = FrigateMonitorOperator(
+        name="FrigateMonitorOperator",
+        task_id="FrigateMonitorOperator"
+    )
+
     #####
     #####
     
     for setup_opr in setup_oprs:
         setup_opr >> deploy_opr
     deploy_opr >> init_opr
+    init_opr >> mon_opr
     for sim_opr in sim_oprs:
-        init_opr >> sim_opr
+        mon_opr >> sim_opr
         sim_opr >> remove_opr
         
     

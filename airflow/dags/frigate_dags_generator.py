@@ -3,6 +3,7 @@ from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.dagrun_operator import TriggerDagRunOperator
 from airflow.utils.dates import days_ago
+from airflow.operators import DagSensor
 from frigate_setup_operator import FrigateSetupOperator, TRAFFIC_TYPE
 from frigate_deploy_operator import FrigateDeployOperator, SimulatorVehiclesToRoute
 from frigate_simulation_operator import FrigateSimulationOperator
@@ -170,16 +171,26 @@ trigger_dag = DAG(
         schedule_interval=None
     )
 with trigger_dag:
-    prev_trigger_op = None
-    for dag_name in CONFIGURATIONS.keys():        
+    prev_wait_sensor = None
+    for dag_name in CONFIGURATIONS.keys():     
+
         trigger_opr = TriggerDagRunOperator(
             task_id=f"TriggerDagOperator-{dag_name}",
             trigger_dag_id=dag_name                        
         )
-        if prev_trigger_op:
-            prev_trigger_op >> trigger_opr
-            prev_trigger_op = trigger_opr
+        
+        wait_sensor = DagSensor(            
+            task_id=f'DagSensor-{dag_name}',
+            external_dag_id=dag_name,
+            poke_interval=30,
+            timeout=3600
+        )
+
+        if prev_wait_sensor:
+            prev_wait_sensor >> trigger_opr >> wait_sensor
+            prev_wait_sensor = wait_sensor
         else:
-            prev_trigger_op = trigger_opr
+            trigger_opr >> wait_sensor
+            prev_wait_sensor = wait_sensor
             continue
 

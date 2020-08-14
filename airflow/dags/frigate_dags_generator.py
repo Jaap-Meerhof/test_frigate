@@ -15,6 +15,7 @@ SOURCE_NODES = [0, 1, 2]
 GRAPHML_ROADNET_FILE = "/home/alberto/Dropbox/alberto/projects/frigate/frigate/data/irregular_grid_dag2/irregular_grid_dag2.graphml"
 SIM_FOLDER = "/home/alberto/Dropbox/alberto/projects/frigate/frigate/data/input"
 FRIGATE_PATH = "/home/alberto/Dropbox/alberto/projects/frigate"
+FRIGATE_DATA_FOLDER = "/home/alberto/Dropbox/alberto/projects/frigate/frigate/data"
 OUTPUT_SIM_FOLDER = "/home/alberto/Dropbox/alberto/projects/frigate/frigate/data/output"
 OUTPUT_MONITOR_FOLDER = "/home/alberto/Dropbox/alberto/projects/frigate/frigate/data/monitor"
 SIM_STEPS = 10
@@ -129,6 +130,19 @@ def generate_frigate_dag(dag_name, scale, target_nodes):
             task_id="FrigateMonitorOperator"
         )
 
+        templated_command = """
+        mkdir {{params.frigate_data_folder}}/{{params.dag_name}}
+        mv {{params.frigate_data_folder}}/input {{params.frigate_data_folder}}/{{params.dag_name}}/input 
+        mv {{params.frigate_data_folder}}/output {{params.frigate_data_folder}}/{{params.dag_name}}/output 
+        mv {{params.frigate_data_folder}}/monitor {{params.frigate_data_folder}}/{{params.dag_name}}/monitor
+        """
+        move_data_opr = BashOperator(
+            task_id='BashOperator-MoveData',
+            bash_command=templated_command,
+            params={'frigate_data_folder': FRIGATE_DATA_FOLDER,
+                    'dag_name': dag_name}
+        )
+
         #####
         #####
 
@@ -139,6 +153,7 @@ def generate_frigate_dag(dag_name, scale, target_nodes):
         for sim_opr in sim_oprs:
             mon_opr >> sim_opr
             sim_opr >> remove_opr
+        remove_opr >> move_data_opr
 
     return dag
 

@@ -61,7 +61,7 @@ with DAG(
         target_nodes=TARGET_NODES,
         eta=0.5,
         routing_step_period=10,
-        sim_steps=100,
+        sim_steps=1000,
         vehicles_to_route=SimulatorVehiclesToRoute.PERIODICAL_STEP,
         task_id="FrigateDeployOperator"
     )

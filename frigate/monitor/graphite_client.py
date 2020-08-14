@@ -17,7 +17,7 @@ class GraphiteClient:
         self.graphite_host = graphite_host
         self.graphite_port = graphite_port
 
-    def get_metric_json(self, metric, from_time="-1hours"):
+    def get_metric_json(self, metric, from_time="-10hours"):
 
         request_url = f"http://{self.graphite_host}:{self.graphite_port}/render?from={from_time}&until=now&target={metric}&format=json"
         logger.info(f"[get_metric_json] requesting: {request_url}")

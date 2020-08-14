@@ -20,7 +20,7 @@ services:
     frigate-kafka-setup:
         build: ./kafka-setup
         environment: 
-            - TOPIC_PARTITIONS=8
+            - TOPIC_PARTITIONS=1
             - KAFKA_HOME=/opt/kafka_2.12-2.4.0
         entrypoint: ./wait-for-it.sh frigate-kafka:9092 --strict -- ./kafka-setup.sh
         image: 127.0.0.1:5001/kafka-setup
@@ -37,7 +37,7 @@ services:
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
-            - TOPIC_PARTITIONS=8
+            - TOPIC_PARTITIONS=1
             - KAFKA_BROKER_URL_2=kafka://frigate-kafka
             - ETA=0.5
         ports:
@@ -54,193 +54,11 @@ services:
             - frigate-kafka
             - frigate-kafka-setup
     
-    frigate-stream-1:
-        build: ./stream        
-        entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6067
-        image: 127.0.0.1:5001/stream                
-        environment: 
-            - FRIGATE_SERVER_NAME=frigate-stream-1
-            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
-            - TOPIC_PARTITIONS=8
-            - KAFKA_BROKER_URL_2=kafka://frigate-kafka
-            - ETA=0.5
-        ports:
-            - mode: ingress
-              protocol: tcp
-              published: 6067
-              target: 6067
-        volumes:
-            - type: bind
-              source: ./data
-              target: /var/data
-        depends_on:
-            - frigate-zookeeper
-            - frigate-kafka
-            - frigate-kafka-setup
-    
-    frigate-stream-2:
-        build: ./stream        
-        entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6068
-        image: 127.0.0.1:5001/stream                
-        environment: 
-            - FRIGATE_SERVER_NAME=frigate-stream-2
-            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
-            - TOPIC_PARTITIONS=8
-            - KAFKA_BROKER_URL_2=kafka://frigate-kafka
-            - ETA=0.5
-        ports:
-            - mode: ingress
-              protocol: tcp
-              published: 6068
-              target: 6068
-        volumes:
-            - type: bind
-              source: ./data
-              target: /var/data
-        depends_on:
-            - frigate-zookeeper
-            - frigate-kafka
-            - frigate-kafka-setup
-    
-    frigate-stream-3:
-        build: ./stream        
-        entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6069
-        image: 127.0.0.1:5001/stream                
-        environment: 
-            - FRIGATE_SERVER_NAME=frigate-stream-3
-            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
-            - TOPIC_PARTITIONS=8
-            - KAFKA_BROKER_URL_2=kafka://frigate-kafka
-            - ETA=0.5
-        ports:
-            - mode: ingress
-              protocol: tcp
-              published: 6069
-              target: 6069
-        volumes:
-            - type: bind
-              source: ./data
-              target: /var/data
-        depends_on:
-            - frigate-zookeeper
-            - frigate-kafka
-            - frigate-kafka-setup
-    
-    frigate-stream-4:
-        build: ./stream        
-        entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6070
-        image: 127.0.0.1:5001/stream                
-        environment: 
-            - FRIGATE_SERVER_NAME=frigate-stream-4
-            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
-            - TOPIC_PARTITIONS=8
-            - KAFKA_BROKER_URL_2=kafka://frigate-kafka
-            - ETA=0.5
-        ports:
-            - mode: ingress
-              protocol: tcp
-              published: 6070
-              target: 6070
-        volumes:
-            - type: bind
-              source: ./data
-              target: /var/data
-        depends_on:
-            - frigate-zookeeper
-            - frigate-kafka
-            - frigate-kafka-setup
-    
-    frigate-stream-5:
-        build: ./stream        
-        entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6071
-        image: 127.0.0.1:5001/stream                
-        environment: 
-            - FRIGATE_SERVER_NAME=frigate-stream-5
-            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
-            - TOPIC_PARTITIONS=8
-            - KAFKA_BROKER_URL_2=kafka://frigate-kafka
-            - ETA=0.5
-        ports:
-            - mode: ingress
-              protocol: tcp
-              published: 6071
-              target: 6071
-        volumes:
-            - type: bind
-              source: ./data
-              target: /var/data
-        depends_on:
-            - frigate-zookeeper
-            - frigate-kafka
-            - frigate-kafka-setup
-    
-    frigate-stream-6:
-        build: ./stream        
-        entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6072
-        image: 127.0.0.1:5001/stream                
-        environment: 
-            - FRIGATE_SERVER_NAME=frigate-stream-6
-            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
-            - TOPIC_PARTITIONS=8
-            - KAFKA_BROKER_URL_2=kafka://frigate-kafka
-            - ETA=0.5
-        ports:
-            - mode: ingress
-              protocol: tcp
-              published: 6072
-              target: 6072
-        volumes:
-            - type: bind
-              source: ./data
-              target: /var/data
-        depends_on:
-            - frigate-zookeeper
-            - frigate-kafka
-            - frigate-kafka-setup
-    
-    frigate-stream-7:
-        build: ./stream        
-        entrypoint: ./wait-for-it.sh frigate-kafka-setup:8080 --strict -- faust --debug -A stream_worker worker -l info --web-bind 0.0.0.0 --web-port 6073
-        image: 127.0.0.1:5001/stream                
-        environment: 
-            - FRIGATE_SERVER_NAME=frigate-stream-7
-            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
-            - TOPIC_PARTITIONS=8
-            - KAFKA_BROKER_URL_2=kafka://frigate-kafka
-            - ETA=0.5
-        ports:
-            - mode: ingress
-              protocol: tcp
-              published: 6073
-              target: 6073
-        volumes:
-            - type: bind
-              source: ./data
-              target: /var/data
-        depends_on:
-            - frigate-zookeeper
-            - frigate-kafka
-            - frigate-kafka-setup
-    
 
     frigate-stream-proxy:        
         build: ./stream-proxy
         image: 127.0.0.1:5001/stream-proxy
-        entrypoint: ./wait-for-it.sh frigate-stream-0:6066 --strict -- ./wait-for-it.sh frigate-stream-1:6067 --strict -- ./wait-for-it.sh frigate-stream-2:6068 --strict -- ./wait-for-it.sh frigate-stream-3:6069 --strict -- ./wait-for-it.sh frigate-stream-4:6070 --strict -- ./wait-for-it.sh frigate-stream-5:6071 --strict -- ./wait-for-it.sh frigate-stream-6:6072 --strict -- ./wait-for-it.sh frigate-stream-7:6073 --strict -- nginx-debug -g 'daemon off;'
+        entrypoint: ./wait-for-it.sh frigate-stream-0:6066 --strict -- nginx-debug -g 'daemon off;'
         volumes:
             - type: bind
               source: ./stream-proxy/conf
@@ -251,20 +69,6 @@ services:
             - frigate-kafka-setup
             
             - frigate-stream-0
-            
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
                 
 
     
@@ -292,20 +96,6 @@ services:
             
             - frigate-stream-0
             
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
             - frigate-stream-proxy
     
     frigate-endpoint-1:
@@ -331,20 +121,6 @@ services:
             - frigate-kafka-setup
             
             - frigate-stream-0
-            
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
             
             - frigate-stream-proxy
     
@@ -372,20 +148,6 @@ services:
             
             - frigate-stream-0
             
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
             - frigate-stream-proxy
     
     frigate-endpoint-3:
@@ -412,187 +174,13 @@ services:
             
             - frigate-stream-0
             
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
-            - frigate-stream-proxy
-    
-    frigate-endpoint-4:
-        build: ./endpoint
-        entrypoint: ./wait-for-it.sh frigate-stream-proxy:6066 --strict -- python endpoint_server.py
-        image: 127.0.0.1:5001/endpoint
-        environment: 
-            - FRIGATE_SERVER_NAME=frigate-endpoint-4
-            - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
-            - ENDPOINT_SERVER_HOST=0.0.0.0
-            - ENDPOINT_SERVER_PORT=5005
-            - KAFKA_BROKER_URL=frigate-kafka:9092
-            - STREAM_SERVICE_WEB_URL=frigate-stream-proxy:6066
-        volumes:
-            - type: bind
-              source: ./data
-              target: /var/data
-        depends_on:
-            - frigate-zookeeper
-            - frigate-kafka
-            - frigate-kafka-setup
-            
-            - frigate-stream-0
-            
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
-            - frigate-stream-proxy
-    
-    frigate-endpoint-5:
-        build: ./endpoint
-        entrypoint: ./wait-for-it.sh frigate-stream-proxy:6066 --strict -- python endpoint_server.py
-        image: 127.0.0.1:5001/endpoint
-        environment: 
-            - FRIGATE_SERVER_NAME=frigate-endpoint-5
-            - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
-            - ENDPOINT_SERVER_HOST=0.0.0.0
-            - ENDPOINT_SERVER_PORT=5006
-            - KAFKA_BROKER_URL=frigate-kafka:9092
-            - STREAM_SERVICE_WEB_URL=frigate-stream-proxy:6066
-        volumes:
-            - type: bind
-              source: ./data
-              target: /var/data
-        depends_on:
-            - frigate-zookeeper
-            - frigate-kafka
-            - frigate-kafka-setup
-            
-            - frigate-stream-0
-            
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
-            - frigate-stream-proxy
-    
-    frigate-endpoint-6:
-        build: ./endpoint
-        entrypoint: ./wait-for-it.sh frigate-stream-proxy:6066 --strict -- python endpoint_server.py
-        image: 127.0.0.1:5001/endpoint
-        environment: 
-            - FRIGATE_SERVER_NAME=frigate-endpoint-6
-            - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
-            - ENDPOINT_SERVER_HOST=0.0.0.0
-            - ENDPOINT_SERVER_PORT=5007
-            - KAFKA_BROKER_URL=frigate-kafka:9092
-            - STREAM_SERVICE_WEB_URL=frigate-stream-proxy:6066
-        volumes:
-            - type: bind
-              source: ./data
-              target: /var/data
-        depends_on:
-            - frigate-zookeeper
-            - frigate-kafka
-            - frigate-kafka-setup
-            
-            - frigate-stream-0
-            
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
-            - frigate-stream-proxy
-    
-    frigate-endpoint-7:
-        build: ./endpoint
-        entrypoint: ./wait-for-it.sh frigate-stream-proxy:6066 --strict -- python endpoint_server.py
-        image: 127.0.0.1:5001/endpoint
-        environment: 
-            - FRIGATE_SERVER_NAME=frigate-endpoint-7
-            - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
-            - ENDPOINT_SERVER_HOST=0.0.0.0
-            - ENDPOINT_SERVER_PORT=5008
-            - KAFKA_BROKER_URL=frigate-kafka:9092
-            - STREAM_SERVICE_WEB_URL=frigate-stream-proxy:6066
-        volumes:
-            - type: bind
-              source: ./data
-              target: /var/data
-        depends_on:
-            - frigate-zookeeper
-            - frigate-kafka
-            - frigate-kafka-setup
-            
-            - frigate-stream-0
-            
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
             - frigate-stream-proxy
     
 
     frigate-endpoint-proxy:        
         build: ./endpoint-proxy
         image: 127.0.0.1:5001/endpoint-proxy
-        entrypoint: ./wait-for-it.sh frigate-endpoint-0:5001 --strict -- ./wait-for-it.sh frigate-endpoint-1:5002 --strict -- ./wait-for-it.sh frigate-endpoint-2:5003 --strict -- ./wait-for-it.sh frigate-endpoint-3:5004 --strict -- ./wait-for-it.sh frigate-endpoint-4:5005 --strict -- ./wait-for-it.sh frigate-endpoint-5:5006 --strict -- ./wait-for-it.sh frigate-endpoint-6:5007 --strict -- ./wait-for-it.sh frigate-endpoint-7:5008 --strict -- nginx-debug -g 'daemon off;'
+        entrypoint: ./wait-for-it.sh frigate-endpoint-0:5001 --strict -- ./wait-for-it.sh frigate-endpoint-1:5002 --strict -- ./wait-for-it.sh frigate-endpoint-2:5003 --strict -- ./wait-for-it.sh frigate-endpoint-3:5004 --strict -- nginx-debug -g 'daemon off;'
         volumes:
             - type: bind
               source: ./endpoint-proxy/conf
@@ -604,20 +192,6 @@ services:
             
             - frigate-stream-0
             
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
             - frigate-stream-proxy
             
             - frigate-endpoint-0
@@ -627,14 +201,6 @@ services:
             - frigate-endpoint-2
             
             - frigate-endpoint-3
-            
-            - frigate-endpoint-4
-            
-            - frigate-endpoint-5
-            
-            - frigate-endpoint-6
-            
-            - frigate-endpoint-7
             
                     
     
@@ -647,7 +213,7 @@ services:
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
-            - SUMO_STEPS=100
+            - SUMO_STEPS=10
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
             - SUMO_SIM_FILE=/var/data/output/0/33/simulation.sumocfg
             - VEHICLES_TO_ROUTE=PERIODICAL_STEP
@@ -672,20 +238,6 @@ services:
             
             - frigate-stream-0
             
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
             - frigate-stream-proxy
             
             - frigate-endpoint-0
@@ -695,14 +247,6 @@ services:
             - frigate-endpoint-2
             
             - frigate-endpoint-3
-            
-            - frigate-endpoint-4
-            
-            - frigate-endpoint-5
-            
-            - frigate-endpoint-6
-            
-            - frigate-endpoint-7
             
             - frigate-endpoint-proxy
     
@@ -715,7 +259,7 @@ services:
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/output/1/33/roadnet.net.xml
-            - SUMO_STEPS=100
+            - SUMO_STEPS=10
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
             - SUMO_SIM_FILE=/var/data/output/1/33/simulation.sumocfg
             - VEHICLES_TO_ROUTE=PERIODICAL_STEP
@@ -740,20 +284,6 @@ services:
             
             - frigate-stream-0
             
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
             - frigate-stream-proxy
             
             - frigate-endpoint-0
@@ -763,14 +293,6 @@ services:
             - frigate-endpoint-2
             
             - frigate-endpoint-3
-            
-            - frigate-endpoint-4
-            
-            - frigate-endpoint-5
-            
-            - frigate-endpoint-6
-            
-            - frigate-endpoint-7
             
             - frigate-endpoint-proxy
     
@@ -783,7 +305,7 @@ services:
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/output/2/33/roadnet.net.xml
-            - SUMO_STEPS=100
+            - SUMO_STEPS=10
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
             - SUMO_SIM_FILE=/var/data/output/2/33/simulation.sumocfg
             - VEHICLES_TO_ROUTE=PERIODICAL_STEP
@@ -808,20 +330,6 @@ services:
             
             - frigate-stream-0
             
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
             - frigate-stream-proxy
             
             - frigate-endpoint-0
@@ -831,14 +339,6 @@ services:
             - frigate-endpoint-2
             
             - frigate-endpoint-3
-            
-            - frigate-endpoint-4
-            
-            - frigate-endpoint-5
-            
-            - frigate-endpoint-6
-            
-            - frigate-endpoint-7
             
             - frigate-endpoint-proxy
     
@@ -851,7 +351,7 @@ services:
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_ROADNET_PATH=/var/data/output/3/33/roadnet.net.xml
-            - SUMO_STEPS=100
+            - SUMO_STEPS=10
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
             - SUMO_SIM_FILE=/var/data/output/3/33/simulation.sumocfg
             - VEHICLES_TO_ROUTE=PERIODICAL_STEP
@@ -876,20 +376,6 @@ services:
             
             - frigate-stream-0
             
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
             - frigate-stream-proxy
             
             - frigate-endpoint-0
@@ -899,286 +385,6 @@ services:
             - frigate-endpoint-2
             
             - frigate-endpoint-3
-            
-            - frigate-endpoint-4
-            
-            - frigate-endpoint-5
-            
-            - frigate-endpoint-6
-            
-            - frigate-endpoint-7
-            
-            - frigate-endpoint-proxy
-    
-    frigate-simulator-4:
-        build: ./simulator
-        entrypoint: ./wait-for-it.sh frigate-endpoint-proxy:8009 --strict -- python simulator_server.py
-        image: 127.0.0.1:5001/simulator
-        environment: 
-            - FRIGATE_SERVER_NAME=frigate-simulator-4
-            - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/output/4/33/roadnet.net.xml
-            - SUMO_STEPS=100
-            - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/output/4/33/simulation.sumocfg
-            - VEHICLES_TO_ROUTE=PERIODICAL_STEP
-            - ROUTING_STEP_PERIOD=10
-            - ENDPOINT_SERVER_PORT=8009
-            - ENDPOINT_SERVER_HOST=frigate-endpoint-proxy
-            - SIMULATOR_SERVER_PORT=8014
-            - SIMULATOR_SERVER_HOST=0.0.0.0
-        ports:
-            - mode: ingress
-              protocol: tcp
-              published: 8014
-              target: 8014
-        volumes:
-            - type: bind
-              source: ./data
-              target: /var/data
-        depends_on:
-            - frigate-zookeeper
-            - frigate-kafka
-            - frigate-kafka-setup
-            
-            - frigate-stream-0
-            
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
-            - frigate-stream-proxy
-            
-            - frigate-endpoint-0
-            
-            - frigate-endpoint-1
-            
-            - frigate-endpoint-2
-            
-            - frigate-endpoint-3
-            
-            - frigate-endpoint-4
-            
-            - frigate-endpoint-5
-            
-            - frigate-endpoint-6
-            
-            - frigate-endpoint-7
-            
-            - frigate-endpoint-proxy
-    
-    frigate-simulator-5:
-        build: ./simulator
-        entrypoint: ./wait-for-it.sh frigate-endpoint-proxy:8009 --strict -- python simulator_server.py
-        image: 127.0.0.1:5001/simulator
-        environment: 
-            - FRIGATE_SERVER_NAME=frigate-simulator-5
-            - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/output/5/33/roadnet.net.xml
-            - SUMO_STEPS=100
-            - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/output/5/33/simulation.sumocfg
-            - VEHICLES_TO_ROUTE=PERIODICAL_STEP
-            - ROUTING_STEP_PERIOD=10
-            - ENDPOINT_SERVER_PORT=8009
-            - ENDPOINT_SERVER_HOST=frigate-endpoint-proxy
-            - SIMULATOR_SERVER_PORT=8015
-            - SIMULATOR_SERVER_HOST=0.0.0.0
-        ports:
-            - mode: ingress
-              protocol: tcp
-              published: 8015
-              target: 8015
-        volumes:
-            - type: bind
-              source: ./data
-              target: /var/data
-        depends_on:
-            - frigate-zookeeper
-            - frigate-kafka
-            - frigate-kafka-setup
-            
-            - frigate-stream-0
-            
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
-            - frigate-stream-proxy
-            
-            - frigate-endpoint-0
-            
-            - frigate-endpoint-1
-            
-            - frigate-endpoint-2
-            
-            - frigate-endpoint-3
-            
-            - frigate-endpoint-4
-            
-            - frigate-endpoint-5
-            
-            - frigate-endpoint-6
-            
-            - frigate-endpoint-7
-            
-            - frigate-endpoint-proxy
-    
-    frigate-simulator-6:
-        build: ./simulator
-        entrypoint: ./wait-for-it.sh frigate-endpoint-proxy:8009 --strict -- python simulator_server.py
-        image: 127.0.0.1:5001/simulator
-        environment: 
-            - FRIGATE_SERVER_NAME=frigate-simulator-6
-            - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/output/6/33/roadnet.net.xml
-            - SUMO_STEPS=100
-            - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/output/6/33/simulation.sumocfg
-            - VEHICLES_TO_ROUTE=PERIODICAL_STEP
-            - ROUTING_STEP_PERIOD=10
-            - ENDPOINT_SERVER_PORT=8009
-            - ENDPOINT_SERVER_HOST=frigate-endpoint-proxy
-            - SIMULATOR_SERVER_PORT=8016
-            - SIMULATOR_SERVER_HOST=0.0.0.0
-        ports:
-            - mode: ingress
-              protocol: tcp
-              published: 8016
-              target: 8016
-        volumes:
-            - type: bind
-              source: ./data
-              target: /var/data
-        depends_on:
-            - frigate-zookeeper
-            - frigate-kafka
-            - frigate-kafka-setup
-            
-            - frigate-stream-0
-            
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
-            - frigate-stream-proxy
-            
-            - frigate-endpoint-0
-            
-            - frigate-endpoint-1
-            
-            - frigate-endpoint-2
-            
-            - frigate-endpoint-3
-            
-            - frigate-endpoint-4
-            
-            - frigate-endpoint-5
-            
-            - frigate-endpoint-6
-            
-            - frigate-endpoint-7
-            
-            - frigate-endpoint-proxy
-    
-    frigate-simulator-7:
-        build: ./simulator
-        entrypoint: ./wait-for-it.sh frigate-endpoint-proxy:8009 --strict -- python simulator_server.py
-        image: 127.0.0.1:5001/simulator
-        environment: 
-            - FRIGATE_SERVER_NAME=frigate-simulator-7
-            - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/output/7/33/roadnet.net.xml
-            - SUMO_STEPS=100
-            - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/output/7/33/simulation.sumocfg
-            - VEHICLES_TO_ROUTE=PERIODICAL_STEP
-            - ROUTING_STEP_PERIOD=10
-            - ENDPOINT_SERVER_PORT=8009
-            - ENDPOINT_SERVER_HOST=frigate-endpoint-proxy
-            - SIMULATOR_SERVER_PORT=8017
-            - SIMULATOR_SERVER_HOST=0.0.0.0
-        ports:
-            - mode: ingress
-              protocol: tcp
-              published: 8017
-              target: 8017
-        volumes:
-            - type: bind
-              source: ./data
-              target: /var/data
-        depends_on:
-            - frigate-zookeeper
-            - frigate-kafka
-            - frigate-kafka-setup
-            
-            - frigate-stream-0
-            
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
-            - frigate-stream-proxy
-            
-            - frigate-endpoint-0
-            
-            - frigate-endpoint-1
-            
-            - frigate-endpoint-2
-            
-            - frigate-endpoint-3
-            
-            - frigate-endpoint-4
-            
-            - frigate-endpoint-5
-            
-            - frigate-endpoint-6
-            
-            - frigate-endpoint-7
             
             - frigate-endpoint-proxy
     
@@ -1198,20 +404,6 @@ services:
             
             - frigate-stream-0
             
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
             - frigate-stream-proxy
             
             - frigate-endpoint-0
@@ -1221,14 +413,6 @@ services:
             - frigate-endpoint-2
             
             - frigate-endpoint-3
-            
-            - frigate-endpoint-4
-            
-            - frigate-endpoint-5
-            
-            - frigate-endpoint-6
-            
-            - frigate-endpoint-7
             
             - frigate-endpoint-proxy
             
@@ -1240,14 +424,6 @@ services:
             
             - frigate-simulator-3
             
-            - frigate-simulator-4
-            
-            - frigate-simulator-5
-            
-            - frigate-simulator-6
-            
-            - frigate-simulator-7
-            
 
     frigate-monitor:        
         build: ./monitor
@@ -1256,7 +432,7 @@ services:
         environment: 
             - GRAPHITE_HOST=frigate-graphite
             - GRAPHITE_PORT=80
-            - NUM_STREAM_SERVERS=8
+            - NUM_STREAM_SERVERS=1
         volumes:
             - type: bind
               source: ./data/monitor
@@ -1273,20 +449,6 @@ services:
             
             - frigate-stream-0
             
-            - frigate-stream-1
-            
-            - frigate-stream-2
-            
-            - frigate-stream-3
-            
-            - frigate-stream-4
-            
-            - frigate-stream-5
-            
-            - frigate-stream-6
-            
-            - frigate-stream-7
-            
             - frigate-stream-proxy
             
             - frigate-endpoint-0
@@ -1297,14 +459,6 @@ services:
             
             - frigate-endpoint-3
             
-            - frigate-endpoint-4
-            
-            - frigate-endpoint-5
-            
-            - frigate-endpoint-6
-            
-            - frigate-endpoint-7
-            
             - frigate-endpoint-proxy
             
             - frigate-simulator-0
@@ -1314,13 +468,5 @@ services:
             - frigate-simulator-2
             
             - frigate-simulator-3
-            
-            - frigate-simulator-4
-            
-            - frigate-simulator-5
-            
-            - frigate-simulator-6
-            
-            - frigate-simulator-7
             
             - frigate-graphite

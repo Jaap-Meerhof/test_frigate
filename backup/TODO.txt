@@ -1,3 +1,0 @@
-28/FEB/2020:
-
-- File offsetfile.json should be adapted according to the number of partitions?

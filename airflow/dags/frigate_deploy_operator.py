@@ -71,6 +71,7 @@ class FrigateDeployOperator(BaseOperator):
 
             input_sim_folder: str,  # path should NOT include trail '/'
             output_sim_folder: str, # path should NOT include trail '/'
+            output_monitor_folder: str, # path should NOT include trail '/' 
             target_nodes: list,
             
             eta: float,  # for stream
@@ -80,6 +81,7 @@ class FrigateDeployOperator(BaseOperator):
             # a constant for the simulator. Use the SimulatorVehiclesToRoute enum.
             vehicles_to_route: str,
             
+            
             *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.name = name
@@ -88,6 +90,7 @@ class FrigateDeployOperator(BaseOperator):
 
         self.input_sim_folder = input_sim_folder
         self.output_sim_folder = output_sim_folder
+        self.output_monitor_folder = output_monitor_folder
         self.target_nodes = target_nodes
 
         self.eta = eta
@@ -158,6 +161,7 @@ class FrigateDeployOperator(BaseOperator):
         wait_for_it_cmd_endpoint_proxy = " ".join(wait_for_it_cmds_endpoint_proxy)
         
         sim_foldern = os.path.basename(self.output_sim_folder)
+        monitor_foldern = os.path.basename(self.output_monitor_folder)
 
         # one simulator server per target node, each running a simulation 
         # for a different target node
@@ -173,12 +177,13 @@ class FrigateDeployOperator(BaseOperator):
             wait_for_it_cmd_endpoint_proxy=wait_for_it_cmd_endpoint_proxy,
             scale=self.scale,
             sim_foldern=sim_foldern,
+            monitor_foldern=monitor_foldern,
             eta=self.eta,
             routing_step_period=self.routing_step_period,
             sim_steps=self.sim_steps,
             vehicles_to_route=self.vehicles_to_route,
             simulator_servers=simulator_servers,
-            endpoint_servers=endpoint_servers
+            endpoint_servers=endpoint_servers            
         )
         fp = open(f"{self.frigate_path}/frigate/docker-compose.yml", "w+")
         fp.write(render)
@@ -255,6 +260,9 @@ class FrigateDeployOperator(BaseOperator):
 
         #random_string = get_random_string(6)
         stack_name = FRIGATE_STACK_NAME
+
+        logger.info("creating monitor folder ...")
+        os.mkdir(path=self.output_monitor_folder)
 
         logger.info("copying sim folder ...")
         os.mkdir(path=self.output_sim_folder)

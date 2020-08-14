@@ -36,7 +36,7 @@ services:
             - FRIGATE_SERVER_NAME=frigate-stream-0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
             - TOPIC_PARTITIONS=8
             - KAFKA_BROKER_URL_2=kafka://frigate-kafka
             - ETA=0.5
@@ -62,7 +62,7 @@ services:
             - FRIGATE_SERVER_NAME=frigate-stream-1
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
             - TOPIC_PARTITIONS=8
             - KAFKA_BROKER_URL_2=kafka://frigate-kafka
             - ETA=0.5
@@ -88,7 +88,7 @@ services:
             - FRIGATE_SERVER_NAME=frigate-stream-2
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
             - TOPIC_PARTITIONS=8
             - KAFKA_BROKER_URL_2=kafka://frigate-kafka
             - ETA=0.5
@@ -114,7 +114,7 @@ services:
             - FRIGATE_SERVER_NAME=frigate-stream-3
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
             - TOPIC_PARTITIONS=8
             - KAFKA_BROKER_URL_2=kafka://frigate-kafka
             - ETA=0.5
@@ -140,7 +140,7 @@ services:
             - FRIGATE_SERVER_NAME=frigate-stream-4
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
             - TOPIC_PARTITIONS=8
             - KAFKA_BROKER_URL_2=kafka://frigate-kafka
             - ETA=0.5
@@ -166,7 +166,7 @@ services:
             - FRIGATE_SERVER_NAME=frigate-stream-5
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
             - TOPIC_PARTITIONS=8
             - KAFKA_BROKER_URL_2=kafka://frigate-kafka
             - ETA=0.5
@@ -192,7 +192,7 @@ services:
             - FRIGATE_SERVER_NAME=frigate-stream-6
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
             - TOPIC_PARTITIONS=8
             - KAFKA_BROKER_URL_2=kafka://frigate-kafka
             - ETA=0.5
@@ -218,7 +218,7 @@ services:
             - FRIGATE_SERVER_NAME=frigate-stream-7
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
             - SUMO_HOME=/opt/sumo-1_1_0
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
             - TOPIC_PARTITIONS=8
             - KAFKA_BROKER_URL_2=kafka://frigate-kafka
             - ETA=0.5
@@ -276,7 +276,7 @@ services:
             - FRIGATE_SERVER_NAME=frigate-endpoint-0
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
             - ENDPOINT_SERVER_HOST=0.0.0.0
             - ENDPOINT_SERVER_PORT=5001
             - KAFKA_BROKER_URL=frigate-kafka:9092
@@ -316,7 +316,7 @@ services:
             - FRIGATE_SERVER_NAME=frigate-endpoint-1
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
             - ENDPOINT_SERVER_HOST=0.0.0.0
             - ENDPOINT_SERVER_PORT=5002
             - KAFKA_BROKER_URL=frigate-kafka:9092
@@ -356,7 +356,7 @@ services:
             - FRIGATE_SERVER_NAME=frigate-endpoint-2
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
             - ENDPOINT_SERVER_HOST=0.0.0.0
             - ENDPOINT_SERVER_PORT=5003
             - KAFKA_BROKER_URL=frigate-kafka:9092
@@ -396,7 +396,7 @@ services:
             - FRIGATE_SERVER_NAME=frigate-endpoint-3
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
             - ENDPOINT_SERVER_HOST=0.0.0.0
             - ENDPOINT_SERVER_PORT=5004
             - KAFKA_BROKER_URL=frigate-kafka:9092
@@ -436,7 +436,7 @@ services:
             - FRIGATE_SERVER_NAME=frigate-endpoint-4
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
             - ENDPOINT_SERVER_HOST=0.0.0.0
             - ENDPOINT_SERVER_PORT=5005
             - KAFKA_BROKER_URL=frigate-kafka:9092
@@ -476,7 +476,7 @@ services:
             - FRIGATE_SERVER_NAME=frigate-endpoint-5
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
             - ENDPOINT_SERVER_HOST=0.0.0.0
             - ENDPOINT_SERVER_PORT=5006
             - KAFKA_BROKER_URL=frigate-kafka:9092
@@ -516,7 +516,7 @@ services:
             - FRIGATE_SERVER_NAME=frigate-endpoint-6
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
             - ENDPOINT_SERVER_HOST=0.0.0.0
             - ENDPOINT_SERVER_PORT=5007
             - KAFKA_BROKER_URL=frigate-kafka:9092
@@ -556,7 +556,7 @@ services:
             - FRIGATE_SERVER_NAME=frigate-endpoint-7
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
             - ENDPOINT_SERVER_HOST=0.0.0.0
             - ENDPOINT_SERVER_PORT=5008
             - KAFKA_BROKER_URL=frigate-kafka:9092
@@ -636,8 +636,7 @@ services:
             
             - frigate-endpoint-7
             
-            
-        
+                    
     
     frigate-simulator-0:
         build: ./simulator
@@ -647,10 +646,10 @@ services:
             - FRIGATE_SERVER_NAME=frigate-simulator-0
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/0/33/roadnet.net.xml
-            - SUMO_STEPS=1000
+            - SUMO_ROADNET_PATH=/var/data/output/0/33/roadnet.net.xml
+            - SUMO_STEPS=100
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/dag_test_output/0/33/simulation.sumocfg
+            - SUMO_SIM_FILE=/var/data/output/0/33/simulation.sumocfg
             - VEHICLES_TO_ROUTE=PERIODICAL_STEP
             - ROUTING_STEP_PERIOD=10
             - ENDPOINT_SERVER_PORT=8009
@@ -715,10 +714,10 @@ services:
             - FRIGATE_SERVER_NAME=frigate-simulator-1
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/1/33/roadnet.net.xml
-            - SUMO_STEPS=1000
+            - SUMO_ROADNET_PATH=/var/data/output/1/33/roadnet.net.xml
+            - SUMO_STEPS=100
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/dag_test_output/1/33/simulation.sumocfg
+            - SUMO_SIM_FILE=/var/data/output/1/33/simulation.sumocfg
             - VEHICLES_TO_ROUTE=PERIODICAL_STEP
             - ROUTING_STEP_PERIOD=10
             - ENDPOINT_SERVER_PORT=8009
@@ -783,10 +782,10 @@ services:
             - FRIGATE_SERVER_NAME=frigate-simulator-2
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/2/33/roadnet.net.xml
-            - SUMO_STEPS=1000
+            - SUMO_ROADNET_PATH=/var/data/output/2/33/roadnet.net.xml
+            - SUMO_STEPS=100
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/dag_test_output/2/33/simulation.sumocfg
+            - SUMO_SIM_FILE=/var/data/output/2/33/simulation.sumocfg
             - VEHICLES_TO_ROUTE=PERIODICAL_STEP
             - ROUTING_STEP_PERIOD=10
             - ENDPOINT_SERVER_PORT=8009
@@ -851,10 +850,10 @@ services:
             - FRIGATE_SERVER_NAME=frigate-simulator-3
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/3/33/roadnet.net.xml
-            - SUMO_STEPS=1000
+            - SUMO_ROADNET_PATH=/var/data/output/3/33/roadnet.net.xml
+            - SUMO_STEPS=100
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/dag_test_output/3/33/simulation.sumocfg
+            - SUMO_SIM_FILE=/var/data/output/3/33/simulation.sumocfg
             - VEHICLES_TO_ROUTE=PERIODICAL_STEP
             - ROUTING_STEP_PERIOD=10
             - ENDPOINT_SERVER_PORT=8009
@@ -919,10 +918,10 @@ services:
             - FRIGATE_SERVER_NAME=frigate-simulator-4
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/4/33/roadnet.net.xml
-            - SUMO_STEPS=1000
+            - SUMO_ROADNET_PATH=/var/data/output/4/33/roadnet.net.xml
+            - SUMO_STEPS=100
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/dag_test_output/4/33/simulation.sumocfg
+            - SUMO_SIM_FILE=/var/data/output/4/33/simulation.sumocfg
             - VEHICLES_TO_ROUTE=PERIODICAL_STEP
             - ROUTING_STEP_PERIOD=10
             - ENDPOINT_SERVER_PORT=8009
@@ -987,10 +986,10 @@ services:
             - FRIGATE_SERVER_NAME=frigate-simulator-5
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/5/33/roadnet.net.xml
-            - SUMO_STEPS=1000
+            - SUMO_ROADNET_PATH=/var/data/output/5/33/roadnet.net.xml
+            - SUMO_STEPS=100
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/dag_test_output/5/33/simulation.sumocfg
+            - SUMO_SIM_FILE=/var/data/output/5/33/simulation.sumocfg
             - VEHICLES_TO_ROUTE=PERIODICAL_STEP
             - ROUTING_STEP_PERIOD=10
             - ENDPOINT_SERVER_PORT=8009
@@ -1055,10 +1054,10 @@ services:
             - FRIGATE_SERVER_NAME=frigate-simulator-6
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/6/33/roadnet.net.xml
-            - SUMO_STEPS=1000
+            - SUMO_ROADNET_PATH=/var/data/output/6/33/roadnet.net.xml
+            - SUMO_STEPS=100
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/dag_test_output/6/33/simulation.sumocfg
+            - SUMO_SIM_FILE=/var/data/output/6/33/simulation.sumocfg
             - VEHICLES_TO_ROUTE=PERIODICAL_STEP
             - ROUTING_STEP_PERIOD=10
             - ENDPOINT_SERVER_PORT=8009
@@ -1123,10 +1122,10 @@ services:
             - FRIGATE_SERVER_NAME=frigate-simulator-7
             - SUMO_HOME=/opt/sumo-1_1_0
             - SUMO_TOOLS_HOME=/opt/sumo-1_1_0/tools
-            - SUMO_ROADNET_PATH=/var/data/dag_test_output/7/33/roadnet.net.xml
-            - SUMO_STEPS=1000
+            - SUMO_ROADNET_PATH=/var/data/output/7/33/roadnet.net.xml
+            - SUMO_STEPS=100
             - SUMO_BINARY=/opt/sumo-1_1_0/bin/sumo
-            - SUMO_SIM_FILE=/var/data/dag_test_output/7/33/simulation.sumocfg
+            - SUMO_SIM_FILE=/var/data/output/7/33/simulation.sumocfg
             - VEHICLES_TO_ROUTE=PERIODICAL_STEP
             - ROUTING_STEP_PERIOD=10
             - ENDPOINT_SERVER_PORT=8009

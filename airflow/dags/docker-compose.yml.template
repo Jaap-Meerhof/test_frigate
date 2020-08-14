@@ -118,8 +118,7 @@ services:
             {% for endpoint_server in endpoint_servers %}
             - {{endpoint_server.name}}
             {% endfor %}
-            
-        
+                    
     {% for simulator_server in simulator_servers %}
     {{simulator_server.name}}:
         build: ./simulator
@@ -196,7 +195,7 @@ services:
             - NUM_STREAM_SERVERS={{scale}}
         volumes:
             - type: bind
-              source: ./data/monitor
+              source: ./data/{{monitor_foldern}}
               target: /output
         ports:
             - mode: ingress

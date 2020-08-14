@@ -1,8 +1,0 @@
-run:
-	echo "hola"
-	echo $(FRIGATE_HOME)
-	ifeq ($(FRIGATE_HOME),undefined)
-	$(error Must provide FRIGATE_HOME in environment)
-	endif
-	export PYTHONPATH=$(FRIGATE_HOME)
-	python -m frigate.endpoint.endpoint_server

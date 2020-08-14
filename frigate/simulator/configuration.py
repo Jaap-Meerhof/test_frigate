@@ -26,7 +26,7 @@ else:
     raise Exception("please declare environment variable 'SUMO_SIM_FILE'")
 
 # "--summary-output", f"/var/data/output_test/summary.xml"
-SUMO_CMD = [SUMO_BINARY, "-c", SUMO_SIM_FILE, "--save-state.period", "10", "--save-state.prefix", "state",  "--save-state.suffix", ".xml"]
+SUMO_CMD = [SUMO_BINARY, "-c", SUMO_SIM_FILE, "--save-state.period", "10", "--save-state.suffix", ".xml"]
 
 if 'VEHICLES_TO_ROUTE' in os.environ:
     VEHICLES_TO_ROUTE = os.environ['VEHICLES_TO_ROUTE']    

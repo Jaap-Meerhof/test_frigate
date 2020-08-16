@@ -19,10 +19,10 @@ FRIGATE_PATH = "/home/alberto/Dropbox/alberto/projects/frigate"
 FRIGATE_DATA_FOLDER = "/home/alberto/Dropbox/alberto/projects/frigate/frigate/data"
 OUTPUT_SIM_FOLDER = "/home/alberto/Dropbox/alberto/projects/frigate/frigate/data/output"
 OUTPUT_MONITOR_FOLDER = "/home/alberto/Dropbox/alberto/projects/frigate/frigate/data/monitor"
-SIM_STEPS = 10
-NUM_VEHICLES = 1000
+SIM_STEPS = 1000
+NUM_VEHICLES = 5000
 SIM_END = 5000
-VEHICLES_TO_ROUTE = SimulatorVehiclesToRoute.PERIODICAL_STEP
+VEHICLES_TO_ROUTE = SimulatorVehiclesToRoute.CHANGED_EDGE
 ETA = 0.5
 ROUTING_STEP_PERIOD = 10
 
@@ -50,10 +50,9 @@ CONFIGURATIONS = {
 
 DEFAULT_ARGS = {
     'owner': 'airflow',
-    'start_date': days_ago(2),
-    'email': ['agrobledo@gmail.com'],
-    'email_on_failure': True,
-    'email_on_success': True,
+    'start_date': days_ago(2),    
+    'email_on_failure': False,
+    'email_on_success': False,
     'retries': 0
 }
 
@@ -179,12 +178,13 @@ with trigger_dag:
             trigger_dag_id=dag_name                        
         )
         
+        #NOTE: Airflow sensors fail after they timeout. Default timeout is 1 week. See: https://airflow.apache.org/docs/stable/_api/airflow/sensors/base_sensor_operator/index.html
         wait_sensor = DagSensor(            
             task_id=f'DagSensor-{dag_name}',
             external_dag_id=dag_name,
-            poke_interval=30,
-            timeout=3600
+            poke_interval=30            
         )
+        
 
         if prev_wait_sensor:
             prev_wait_sensor >> trigger_opr >> wait_sensor

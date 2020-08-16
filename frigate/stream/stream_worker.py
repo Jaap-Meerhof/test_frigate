@@ -31,7 +31,8 @@ statsd_mon = StatsdMonitor(host=GRAPHITE_HOST, port=STATSD_PORT, prefix='frigate
 
 app = faust.App('frigate-stream-app',
                 broker=KAFKA_BROKER_URL_2, topic_partitions=TOPIC_PARTITIONS,
-                monitor=statsd_mon)
+                monitor=statsd_mon,
+                broker_request_timeout=180)
                 #stream_buffer_maxsize=12288)
 road_net = sumolib.net.readNet(SUMO_ROADNET_PATH)
 

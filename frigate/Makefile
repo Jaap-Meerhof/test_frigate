@@ -112,7 +112,7 @@ logs-kafka-setup:
 
 logs-kafka:
 	clear
-	docker service logs frigate_frigate-kafka -f --tail 1000
+	docker service logs frigate_frigate-kafka -f  
 
 logs-zookeeper:
 	clear
@@ -120,35 +120,35 @@ logs-zookeeper:
 
 logs-stream0:
 	clear
-	docker service logs frigate_frigate-stream-0 -f --tail 1000
+	docker service logs frigate_frigate-stream-0 -f 
 
 logs-stream1:
 	clear
-	docker service logs frigate_frigate-stream-1 -f --tail 1000
+	docker service logs frigate_frigate-stream-1 -f 
 
 logs-stream2:
 	clear
-	docker service logs frigate_frigate-stream-2 -f --tail 1000
+	docker service logs frigate_frigate-stream-2 -f 
 
 logs-stream3:
 	clear
-	docker service logs frigate_frigate-stream-3 -f --tail 1000
+	docker service logs frigate_frigate-stream-3 -f 
 
 logs-stream4:
 	clear
-	docker service logs frigate_frigate-stream-4 -f --tail 1000
+	docker service logs frigate_frigate-stream-4 -f 
 
 logs-stream5:
 	clear
-	docker service logs frigate_frigate-stream-5 -f --tail 1000
+	docker service logs frigate_frigate-stream-5 -f 
 
 logs-stream6:
 	clear
-	docker service logs frigate_frigate-stream-6 -f --tail 1000
+	docker service logs frigate_frigate-stream-6 -f 
 
 logs-stream7:
 	clear
-	docker service logs frigate_frigate-stream-7 -f --tail 1000
+	docker service logs frigate_frigate-stream-7 -f 
 
 logs-graphite:
 	clear

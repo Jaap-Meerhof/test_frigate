@@ -1,0 +1,17 @@
+clear
+[H[2J[3Jdocker service logs frigate_frigate-stream-0 -f 
+frigate_frigate-stream-0.1.qg7nk7rohot0@alberto-Vostro-3490    | +ƒaµS† v1.10.3+------------------------------------------+
+frigate_frigate-stream-0.1.qg7nk7rohot0@alberto-Vostro-3490    | | id          | frigate-stream-app                       |
+frigate_frigate-stream-0.1.qg7nk7rohot0@alberto-Vostro-3490    | | transport   | [URL('kafka://frigate-kafka')]           |
+frigate_frigate-stream-0.1.qg7nk7rohot0@alberto-Vostro-3490    | | store       | memory:                                  |
+frigate_frigate-stream-0.1.qg7nk7rohot0@alberto-Vostro-3490    | | web         | http://localhost:6066/                   |
+frigate_frigate-stream-0.1.qg7nk7rohot0@alberto-Vostro-3490    | | log         | -stderr- (info)                          |
+frigate_frigate-stream-0.1.qg7nk7rohot0@alberto-Vostro-3490    | | pid         | 1                                        |
+frigate_frigate-stream-0.1.qg7nk7rohot0@alberto-Vostro-3490    | | hostname    | a3d3ef7a6029                             |
+frigate_frigate-stream-0.1.qg7nk7rohot0@alberto-Vostro-3490    | | platform    | CPython 3.7.1 (Linux x86_64)             |
+frigate_frigate-stream-0.1.qg7nk7rohot0@alberto-Vostro-3490    | | drivers     |                                          |
+frigate_frigate-stream-0.1.qg7nk7rohot0@alberto-Vostro-3490    | |   transport | aiokafka=1.1.6                           |
+frigate_frigate-stream-0.1.qg7nk7rohot0@alberto-Vostro-3490    | |   web       | aiohttp=3.6.2                            |
+frigate_frigate-stream-0.1.qg7nk7rohot0@alberto-Vostro-3490    | | datadir     | /frigate-stream-app-data                 |
+frigate_frigate-stream-0.1.qg7nk7rohot0@alberto-Vostro-3490    | | appdir      | /frigate-stream-app-data/v1              |
+frigate_frigate-stream-0.1.qg7nk7rohot0@alberto-Vostro-3490    | +-------------+------------------------------------------+
